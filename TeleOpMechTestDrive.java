@@ -14,7 +14,7 @@ public class TeleOpMechTestDrive extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        double threshold = 0.2; // deadzone of the gampad analog sticks
+        double threshold = 0.3; // deadzone of the gampad analog sticks
         double rightStickX; // driver gampad right stick X
         double leftStickX; // driver gampad left stick X
         double leftStickY; // driver gampad left stick Y
@@ -36,13 +36,18 @@ public class TeleOpMechTestDrive extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
+            leftFrontSpeed = 0;
+            leftRearSpeed = 0;
+            rightRearSpeed = 0;
+            rightFrontSpeed = 0;
+
             // capture the gamepad right and left analog stick values
             rightStickX = gamepad1.right_stick_x;
-            leftStickX = gamepad1.left_stick_x;
-            leftStickY = gamepad1.left_stick_y;
+            leftStickX = gamepad1.left_stick_y;
+            leftStickY = gamepad1.left_stick_x;
 
             // Output the safe vales to the motor drives.
-            if (abs(gamepad1.left_stick_y) > threshold || abs(gamepad1.left_stick_x) > threshold) {
+            if (abs(gamepad1.left_stick_x) > threshold || abs(gamepad1.left_stick_y) > threshold) {
                 rightFrontSpeed = -leftStickY - leftStickX;
                 rightRearSpeed = leftStickY - leftStickX;
                 leftFrontSpeed = leftStickY - leftStickX;
@@ -65,6 +70,16 @@ public class TeleOpMechTestDrive extends LinearOpMode {
             robot.leftFront.setPower(leftFrontSpeed);
             robot.rightRear.setPower(rightRearSpeed);
             robot.leftRear.setPower(leftRearSpeed);
+
+            telemetry.addData("leftFront Power ", leftFrontSpeed);
+            telemetry.addData("leftRear Power ", leftRearSpeed);
+            telemetry.addData("rightFront Power ", rightFrontSpeed);
+            telemetry.addData("rightRear Power ", rightRearSpeed);
+
+            telemetry.addData("gamepad1.right_stick_x", gamepad1.right_stick_x);
+            telemetry.addData("gamepad1.left_stick_x", gamepad1.left_stick_x);
+            telemetry.addData("gamepad1.left_stick_y", gamepad1.left_stick_y);
+            telemetry.update();
 
             // Pace this loop so jaw action is reasonable speed.
             sleep(50);
