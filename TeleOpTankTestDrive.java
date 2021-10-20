@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class TeleOpTankTestDrive extends LinearOpMode {
 
     /* Declare OpMode members. */
-    HardwareMapping robot           = new HardwareMapping();   // Use our hardware apping
+    HardwareMappingTank robot           = new HardwareMappingTank();   // Use our hardware apping
 
     @Override
     public void runOpMode() {
@@ -28,15 +28,17 @@ public class TeleOpTankTestDrive extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            driveLeftSpeed = gamepad1.left_stick_y;
-            driveRightSpeed = gamepad1.right_stick_y;
+            driveLeftSpeed = -gamepad1.left_stick_y;
+            driveRightSpeed = -gamepad1.right_stick_y;
 
 
             // Output the safe vales to the motor drives.
-            robot.leftFront.setPower(driveLeftSpeed);
-            robot.leftRear.setPower(driveLeftSpeed);
-            robot.rightFront.setPower(driveRightSpeed);
-            robot.rightRear.setPower(driveRightSpeed);
+            robot.rightMotor.setPower(driveRightSpeed);
+            robot.leftMotor.setPower(driveLeftSpeed);
+            if(gamepad1.a)
+            robot.carouselMotor.setPower(0.25);
+            else
+            robot.carouselMotor.setPower(0);
 
             // Pace this loop so jaw action is reasonable speed.
             sleep(50);
