@@ -27,17 +27,20 @@ private ElapsedTime runtime = new ElapsedTime();
          this.encoderDrive(power, -distance, distance, timeout);
 
      }
-    public void moveLeft(){
 
-    }
-    public void rotateClockwise(){
-
-    }
-    public void moveRight(){
-
+    public void rotateClockwise(double power, double distance, double timeout){
+        this.encoderDrive(power, distance, -distance, timeout);
     }
 
- public void encoderDrive(double speed,
+   public void duckCarouselClockwise(double power){
+     carouselMotor.setPower(power);
+ }
+
+   public void duckCarouselCounterClockwise(double power){
+        carouselMotor.setPower(-power);
+   }
+
+private void encoderDrive(double speed,
                           double leftInches, double rightInches,
                           double timeoutS) {
    int newLeftTarget;
