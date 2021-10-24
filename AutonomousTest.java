@@ -23,8 +23,10 @@ public class AutonomousTest extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            commands.moveForward(0.5);
-
+            commands.moveForward(0.5,10, 15);
+            commands.moveBackward(0.65, 15, 20);
+            commands.rotateCounterClockwise(0.5, 10,20 );
+            sleep(30000);
         }
     }
 
