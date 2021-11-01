@@ -17,6 +17,31 @@ public class AutonomousTest extends LinearOpMode {
          */
         commands.init(hardwareMap);
 
+        ObjectDetection obd = new ObjectDetection();
+        telemetry.addLine("Starting Barcode Detection!");
+        telemetry.update();
+        int i = 0;
+        int obdState = obd.getState();
+        while(obdState == -1){ // loop until 10 times or until the object detection returns back a valid result
+            if(i++ > 10){
+                break;
+            }
+        }
+
+        if(obdState == -1){
+            telemetry.addLine("Could Not Detect Code");
+        }else if(obdState == 1){
+            telemetry.addLine("Bar Code A");
+        }else if(obdState == 2){
+            telemetry.addLine("Bar Code B");
+        }else if(obdState == 3){
+            telemetry.addLine("Bar Code C");
+        }else{
+            telemetry.addLine("Bar Code ERROR");
+        }
+
+        telemetry.addLine("Barcode Detection Complete!");
+        telemetry.update();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
