@@ -21,6 +21,20 @@ public class AutonomousRedRight extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            commands.moveForward(0.5,5,5);
+            //face the hub
+            commands.rotateCounterClockwise(0.5,40,8);
+            //kiss the hub
+            commands.moveForward(0.5,24,8);
+            //drop the box
+            // clear the hub
+            commands.moveBackward(0.5,5,3);
+            //turn to face the warehouse
+            commands.rotateClockwise(0.5,60,10);
+            //go to the warehouse
+            commands.moveForward(0.5,45,11);
+
+
             sleep(30000);
         }
     }

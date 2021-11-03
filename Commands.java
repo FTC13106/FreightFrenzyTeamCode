@@ -36,6 +36,15 @@ public class Commands extends HardwareMappingTank {
         carouselMotor.setPower(power);
     }
 
+    public void closeClaw(){
+        clawServo.setPosition(1);
+    }
+
+    public void openClaw(){
+        clawServo.setPosition(0);
+    }
+
+
     public void duckCarouselCounterClockwise(double power) {
         carouselMotor.setPower(-power);
     }
@@ -100,6 +109,6 @@ public class Commands extends HardwareMappingTank {
 
         //  sleep(250);   // optional pause after each move
     }
-}
+        }
 
 
