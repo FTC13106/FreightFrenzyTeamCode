@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode;
-
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.robotcore.internal.camera.delegating.DelegatingCaptureSequence;
 
 import java.util.List;
 
@@ -21,10 +23,10 @@ public class ObjectDetection extends HardwareMappingTank {
      *  FreightFrenzy_DM.tflite  0: Duck,  1: Marker
      *  May only want to use the FreightFrenzy_DM.tflite to reduce the complexity of the scan
      */
-    private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";
+    private static final String TFOD_MODEL_ASSET = "FreightFrenzy_DM.tflite";
     private static final String[] LABELS = {
-            "Ball",
-            "Cube",
+//            "Ball",
+//            "Cube",
             "Duck",
             "Marker"
     };
@@ -36,10 +38,10 @@ public class ObjectDetection extends HardwareMappingTank {
     private TFObjectDetector tfod;
 
     public ObjectDetection(){
-        init();
     }
 
-    private void init() {
+    public void init(HardwareMap ahwMap) {
+        super.init(ahwMap);
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
         initVuforia();
@@ -52,16 +54,53 @@ public class ObjectDetection extends HardwareMappingTank {
         if (tfod != null) {
             tfod.activate();
 
-            tfod.setZoom(2.5, 16.0/9.0);
+            // removed zoom because we need maximum field of view
+            //tfod.setZoom(2.5, 16.0/9.0);
         }
+    }
 
+    /**
+     * Returns the duck position if it's found on during detection
+     * @return the X position of the duck {-1 = Not found, value between 0-600}
+     */
+    public float getDuckPosition(){
+        float duck = -1.0f;
+        if (tfod != null) {
+            // Using getRecognitions because it returns a value every time it's called
+            List<Recognition> updatedRecognitions = tfod.getRecognitions();
+
+            if (updatedRecognitions != null) {
+                // step through the list of recognitions and get Duck position
+                for (Recognition recognition : updatedRecognitions) {
+                     if(recognition.getLabel().equals("Duck")){
+                         // find the center of the duck recognition box
+                         duck = (recognition.getLeft() + recognition.getRight()) / 2;
+                    }
+                }
+            }
+        }
+        return duck;
+    }
+
+    /**
+     * Returns an assessment of the object detection based on duck position
+     * @return the determined state {1 = level 1 (Default), 2= level 2, 3 = level 3}
+     */
+    public int getDuckState(){
+        float duck = getDuckPosition();
+        // Split the viewable screen (~600 wide) into 3 zones and if the duck is found in that zone return that zone number
+        if (duck < 200)
+            return 1;
+        else if(duck < 400)
+            return 2;
+        else
+            return 3;
     }
 
     /**
      * Returns an assessment of the object detection
      * @return int state of object detection {-1 = Invalid, 0 = Error, 1 = Low, 2 = Mid, 3 = High}
      */
-
     public int getState(){
         boolean foundTwoMarkersAndADuck = false;
         float firstMarker = 0.0f;
@@ -140,7 +179,6 @@ public class ObjectDetection extends HardwareMappingTank {
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
-
     }
 
     /**
@@ -150,7 +188,8 @@ public class ObjectDetection extends HardwareMappingTank {
         int tfodMonitorViewId = hwMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hwMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minResultConfidence = 0.8f;
+        // reducing confidence to 50%
+        tfodParameters.minResultConfidence = 0.5f;
         tfodParameters.isModelTensorFlow2 = true;
         tfodParameters.inputSize = 320;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
