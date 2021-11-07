@@ -1,17 +1,15 @@
 package org.firstinspires.ftc.teamcode;
 
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
 
 @TeleOp(name="TeleOp: Tank", group="Tank")
 //@Disabled
 public class TeleOpTankTestDrive extends LinearOpMode {
 
     /* Declare OpMode members. */
-    HardwareMappingTank robot           = new HardwareMappingTank();   // Use our hardware apping
-    FieldNavigation fieldNav = new FieldNavigation();
+    HardwareMappingTank robot           = new HardwareMappingTank();   // Use our hardware mapping
+    //FieldNavigation fieldNav = new FieldNavigation();
 
     @Override
     public void runOpMode() {
@@ -22,26 +20,39 @@ public class TeleOpTankTestDrive extends LinearOpMode {
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
-        fieldNav.startTracking();
+        //fieldNav.startTracking();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            driveLeftSpeed = -gamepad1.left_stick_y;
-            driveRightSpeed = -gamepad1.right_stick_y;
+            // arcade drive controls
+            driveLeftSpeed = -(gamepad1.left_stick_y - gamepad1.left_stick_x);
+            driveRightSpeed = -(gamepad1.left_stick_y + gamepad1.left_stick_x);
+            telemetry.addData("leftstick - y ", gamepad1.left_stick_y);
+            telemetry.addData("leftstick - x", gamepad1.left_stick_x);
+            telemetry.update();
 
+            // tank drive controls
+            //driveLeftSpeed = -gamepad1.left_stick_y;
+            //driveRightSpeed = -gamepad1.right_stick_y;
 
             // Output the safe vales to the motor drives.
             robot.rightRearMotor.setPower(driveRightSpeed);
             robot.rightFrontMotor.setPower(driveRightSpeed);
             robot.leftRearMotor.setPower(driveLeftSpeed);
             robot.leftFrontMotor.setPower(driveLeftSpeed);
-            if(gamepad1.a)
-            robot.carouselMotor.setPower(0.25);
-            else
-            robot.carouselMotor.setPower(0);
 
+            // TODO restore carouselMotor controls when the motor is reinstalled
+            /*
+            if(gamepad1.a)
+                robot.carouselMotor.setPower(0.25);
+            else
+                robot.carouselMotor.setPower(0);
+            */
+
+            // TODO restore fieldNav if we decide to use it
+            /*
             float[] navData = fieldNav.getLocation();
             if(navData != null){
                 telemetry.addData("Pos (inches)", "{X, Y, Z} = %.1f, %.1f, %.1f",
@@ -52,10 +63,11 @@ public class TeleOpTankTestDrive extends LinearOpMode {
                 telemetry.addData("Visible Target", "none");
                 telemetry.update();
             }
+            */
             // Pace this loop so jaw action is reasonable speed.
             sleep(50);
         }
 
-        fieldNav.stopTracking();
+        //fieldNav.stopTracking();
     }
 }
