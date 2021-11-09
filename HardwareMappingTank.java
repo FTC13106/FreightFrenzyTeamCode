@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -20,13 +21,13 @@ public class HardwareMappingTank
     public DcMotor elevatorMotor = null;
     public CRServo intakeServo = null;
     public Servo clawServo = null;
+
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
     public HardwareMappingTank(){
-
     }
 
     /* Initialize standard Hardware interfaces */
@@ -35,48 +36,74 @@ public class HardwareMappingTank
         hwMap = ahwMap;
 
         // Define and Initialize Motors
-        leftFrontMotor = hwMap.get(DcMotor.class, "leftFrontMotor");
-        leftRearMotor = hwMap.get(DcMotor.class, "leftRearMotor");
-        rightFrontMotor = hwMap.get(DcMotor.class, "rightFrontMotor");
-        rightRearMotor = hwMap.get(DcMotor.class, "rightRearMotor");
-        webcamName = hwMap.get(WebcamName.class, "Webcam 1");
-        /*
-        carouselMotor = hwMap.get(DcMotor.class, "carouselMotor");
-        elevatorMotor = hwMap.get(DcMotor.class, "elevatorMotor");
-        intakeServo = hwMap.get(CRServo.class, "intakeServo");
-        clawServo = hwMap.get(Servo.class, "clawServo");
-        */
+        leftFrontMotor = setupMotor("leftFrontMotor", DcMotor.Direction.REVERSE, 0, true);
+        leftRearMotor = setupMotor("leftRearMotor", DcMotor.Direction.REVERSE, 0, true);
+        rightFrontMotor = setupMotor("rightFrontMotor", DcMotor.Direction.FORWARD, 0, true);
+        rightRearMotor = setupMotor("rightRearMotor", DcMotor.Direction.FORWARD, 0, true);
+        webcamName = setupWebcam("Webcam 1");
+        elevatorMotor = setupMotor("elevatorMotor", DcMotor.Direction.FORWARD, 0, true);
+        carouselMotor = setupMotor("carouselMotor", DcMotor.Direction.FORWARD, 0, false);
+        intakeServo = setupCRServo("intakeServo",  0);
+        clawServo = setupServo("clawServo",  0);
+    }
 
-        leftFrontMotor.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
-        leftRearMotor.setDirection(DcMotor.Direction.REVERSE); // Set to REVERSE if using AndyMark motors
-        rightFrontMotor.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
-        rightRearMotor.setDirection(DcMotor.Direction.FORWARD);// Set to FORWARD if using AndyMark motors
-        /*
-        carouselMotor.setDirection(DcMotor.Direction.FORWARD);
-        elevatorMotor.setDirection(DcMotor.Direction.FORWARD);
-        */
+    /* Init Motor, set direction, initial power and encoder runmode (if applicable)
+    * @return the configured DcMotor or null if the motor is not found
+    */
+    private DcMotor setupMotor(String name, DcMotorSimple.Direction direction, int initialPower, boolean useEncoder){
+        try {
+            DcMotor motor = hwMap.get(DcMotor.class, name);
+            motor.setDirection(direction);
+            motor.setPower(initialPower);
+            if (useEncoder){
+                motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+            return motor;
+        }
+        catch(Exception e) {
+            return null;
+        }
+    }
 
-        // Set all motors to zero power
-        leftFrontMotor.setPower(0);
-        leftRearMotor.setPower(0);
-        rightFrontMotor.setPower(0);
-        rightRearMotor.setPower(0);
-        /*
-        carouselMotor.setPower(0);
-        elevatorMotor.setPower(0);
-        clawServo.setPosition(0);
-        intakeServo.setPower(0);
-        */
+    /* Init CRServo and set initial power
+     * @return the configured CRServo or null if the servo is not found
+     */
+    private CRServo setupCRServo(String name, int initialPower){
+        try {
+            CRServo servo = hwMap.get(CRServo.class, name);
 
-        // Set all motors to run without encoders.
-        // May want to use RUN_USING_ENCODERS if encoders are installed.
-        leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftRearMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightRearMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        /*
-        elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        */
+            servo.setPower(initialPower);
+            return servo;
+        }
+        catch(Exception e) {
+            return null;
+        }
+    }
 
+    /* Init Servo and set initial position
+     * @return the configured Servo or null if the servo is not found
+     */
+    private Servo setupServo(String name, int initialPosition){
+        try {
+            Servo servo = hwMap.get(Servo.class, name);
+            servo.setPosition(initialPosition);
+            return servo;
+        }
+        catch(Exception e) {
+            return null;
+        }
+    }
+
+    /* Init WebcamName
+     * @return the configured WebcamName or null if the webcam is not found
+     */
+    private WebcamName setupWebcam(String name){
+        try {
+            WebcamName webcamName = hwMap.get(WebcamName.class, name);
+            return webcamName;
+        }
+        catch(Exception e) {
+            return null;
+        }
     }
 }
