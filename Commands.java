@@ -13,6 +13,11 @@ public class Commands extends HardwareMappingTank {
     static final double DRIVE_SPEED = 0.6;
     static final double TURN_SPEED = 0.5;
 
+    static final double ELEVATOR_WHEEL_DIAMETER_INCHES = 0.5;
+    static final double ELEVATOR_COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (ELEVATOR_WHEEL_DIAMETER_INCHES * 3.1415);
+
+
     private ElapsedTime runtime = new ElapsedTime();
 
     public void moveForward(double power, double distance, double timeout) {
@@ -36,6 +41,10 @@ public class Commands extends HardwareMappingTank {
         carouselMotor.setPower(power);
     }
 
+    public void duckCarouselCounterClockwise(double power) {
+        carouselMotor.setPower(-power);
+    }
+
     public void closeClaw(){
         clawServo.setPosition(1);
     }
@@ -43,11 +52,33 @@ public class Commands extends HardwareMappingTank {
     public void openClaw(){
         clawServo.setPosition(0);
     }
-
-
-    public void duckCarouselCounterClockwise(double power) {
-        carouselMotor.setPower(-power);
+    public void elevatorUp(){
+        elevatorMotor.setPower(0.5);
     }
+
+    public void elevatorDown(){
+        elevatorMotor.setPower(-0.5);
+    }
+    public void elevatorStop(){
+        elevatorMotor.setPower(0);
+    }
+
+    public void intakeOn(){
+        intakeServo.setPower(0.5);
+    }
+    public void releaseIntakeServo(){
+        intakeServo.setPower(-0.5);
+    }
+    public void stopIntakeServo(){
+        intakeServo.setPower(0);
+    }
+
+    private void elevatorPosition(double speed, double timeouts, double heightInches){
+        double heightTarget;
+
+        heightTarget = elevatorMotor.getCurrentPosition() + (int) (heightInches * ELEVATOR_COUNTS_PER_INCH);
+    }
+
 
     private void encoderDrive(double speed,
                               double leftInches, double rightInches,
@@ -109,6 +140,6 @@ public class Commands extends HardwareMappingTank {
 
         //  sleep(250);   // optional pause after each move
     }
-        }
+}
 
 
