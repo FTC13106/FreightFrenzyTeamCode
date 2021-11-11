@@ -57,14 +57,17 @@ public class Commands extends HardwareMappingTank {
     }
 
     public void elevatorUp(){
+        elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         elevatorMotor.setPower(0.5);
     }
 
     public void elevatorDown(){
+        elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         elevatorMotor.setPower(-0.5);
     }
 
     public void elevatorStop(){
+        elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         elevatorMotor.setPower(0);
     }
 
@@ -73,13 +76,19 @@ public class Commands extends HardwareMappingTank {
     }
 
     public void intakeOn(){
-        intakeServo.setPower(0.5);
+        if(intakeServo != null){
+            intakeServo.setPower(0.5);
+        }
     }
     public void releaseIntakeServo(){
-        intakeServo.setPower(-0.5);
+        if(intakeServo != null) {
+            intakeServo.setPower(-0.5);
+        }
     }
     public void stopIntakeServo(){
-        intakeServo.setPower(0);
+        if(intakeServo != null) {
+            intakeServo.setPower(0);
+        }
     }
 
     /**
@@ -144,7 +153,13 @@ public class Commands extends HardwareMappingTank {
         return false;
     }
 
-
+    /**
+     * Should be called to zero the encoder
+     * Example at the start of Autonomous
+     */
+    public void resetElevatorPosition(){
+        elevatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
 
     private void encoderDrive(double speed,
                               double leftInches, double rightInches,

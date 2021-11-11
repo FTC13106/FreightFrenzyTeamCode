@@ -36,13 +36,13 @@ public class HardwareMappingTank
         hwMap = ahwMap;
 
         // Define and Initialize Motors
-        leftFrontMotor = setupMotor("leftFrontMotor", DcMotor.Direction.REVERSE, 0, true);
-        leftRearMotor = setupMotor("leftRearMotor", DcMotor.Direction.REVERSE, 0, true);
-        rightFrontMotor = setupMotor("rightFrontMotor", DcMotor.Direction.FORWARD, 0, true);
-        rightRearMotor = setupMotor("rightRearMotor", DcMotor.Direction.FORWARD, 0, true);
+        leftFrontMotor = setupMotor("leftFrontMotor", DcMotor.Direction.REVERSE, 0, true,true);
+        leftRearMotor = setupMotor("leftRearMotor", DcMotor.Direction.REVERSE, 0, true,true);
+        rightFrontMotor = setupMotor("rightFrontMotor", DcMotor.Direction.FORWARD, 0, true,true);
+        rightRearMotor = setupMotor("rightRearMotor", DcMotor.Direction.FORWARD, 0, true,true);
         webcamName = setupWebcam("Webcam 1");
-        elevatorMotor = setupMotor("elevatorMotor", DcMotor.Direction.FORWARD, 0, true);
-        carouselMotor = setupMotor("carouselMotor", DcMotor.Direction.FORWARD, 0, false);
+        elevatorMotor = setupMotor("elevatorMotor", DcMotor.Direction.FORWARD, 0, true,true);
+        carouselMotor = setupMotor("carouselMotor", DcMotor.Direction.FORWARD, 0, false,true);
         intakeServo = setupCRServo("intakeServo",  0);
         clawServo = setupServo("clawServo",  0);
     }
@@ -50,13 +50,20 @@ public class HardwareMappingTank
     /* Init Motor, set direction, initial power and encoder runmode (if applicable)
     * @return the configured DcMotor or null if the motor is not found
     */
-    private DcMotor setupMotor(String name, DcMotorSimple.Direction direction, int initialPower, boolean useEncoder){
+    private DcMotor setupMotor(String name, DcMotorSimple.Direction direction, int initialPower, boolean useEncoder, boolean brakeMode){
         try {
             DcMotor motor = hwMap.get(DcMotor.class, name);
             motor.setDirection(direction);
             motor.setPower(initialPower);
+
             if (useEncoder){
                 motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+
+            if(brakeMode){
+                motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            }else{
+                motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             }
             return motor;
         }
@@ -71,7 +78,6 @@ public class HardwareMappingTank
     private CRServo setupCRServo(String name, int initialPower){
         try {
             CRServo servo = hwMap.get(CRServo.class, name);
-
             servo.setPower(initialPower);
             return servo;
         }
