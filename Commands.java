@@ -14,8 +14,11 @@ public class Commands extends HardwareMappingTank {
     static final double TURN_SPEED = 0.5;
 
     static final double ELEVATOR_WHEEL_DIAMETER_INCHES = 0.5;
-    static final double ELEVATOR_COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+    static final double ELEVATOR_GEAR_REDUCTION = 2.0;     // This is < 1.0 if geared UP
+    static final double ELEVATOR_COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * ELEVATOR_GEAR_REDUCTION) /
             (ELEVATOR_WHEEL_DIAMETER_INCHES * 3.1415);
+
+    static final double ELEVATOR_ANGLE = 1.0; // angle of Elevator as sin(degrees)
 
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -52,6 +55,7 @@ public class Commands extends HardwareMappingTank {
     public void openClaw(){
         clawServo.setPosition(0);
     }
+
     public void elevatorUp(){
         elevatorMotor.setPower(0.5);
     }
@@ -59,8 +63,13 @@ public class Commands extends HardwareMappingTank {
     public void elevatorDown(){
         elevatorMotor.setPower(-0.5);
     }
+
     public void elevatorStop(){
         elevatorMotor.setPower(0);
+    }
+
+    public void elevatorMoveToFloor(double power,double heightInches,double timeout){
+        this.elevatorPosition(power,heightInches,timeout);
     }
 
     public void intakeOn(){
@@ -73,11 +82,68 @@ public class Commands extends HardwareMappingTank {
         intakeServo.setPower(0);
     }
 
-    private void elevatorPosition(double speed, double timeouts, double heightInches){
-        double heightTarget;
+    /**
+     * Assume that the elevator encoder was reset at power up
+     * so position is 0.
+     * Move to the given position based on heightInches
+     * This function will stay until complete
+     * used by Autonomous
+     *
+     * @param speed double speed [-1..1]
+     * @param heightInches double desired inches off the ground
+     * @param timeoutS timeout in seconds used by Autonomous
+     */
+    private void elevatorPosition(double speed, double heightInches, double timeoutS) {
+        int heightTarget = (int) (heightInches * ELEVATOR_COUNTS_PER_INCH);
 
-        heightTarget = elevatorMotor.getCurrentPosition() + (int) (heightInches * ELEVATOR_COUNTS_PER_INCH);
+        // now we need to adjust for elevator angle
+        // use ASA theorem
+
+        elevatorMotor.setTargetPosition(heightTarget);
+        elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        runtime.reset();
+
+        elevatorMotor.setPower(Math.abs(speed));
+        while (
+                (runtime.seconds() < timeoutS) &&
+                        (elevatorMotor.isBusy())) ;
+
+        // Stop all motion;
+        elevatorMotor.setPower(0);
+        elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
     }
+
+    /**
+     * Assume that the elevator encoder was reset at power up
+     * so position is 0.
+     * Move to the given position based on heightInches
+     * This function will maintain and return true when complete
+     * used by TeleOp
+     *
+     * @param speed double speed [-1..1]
+     * @param heightInches double desired inches off the ground
+     * @return boolean complete
+     */
+    public boolean teleopElevatorPosition(double speed, double heightInches) {
+        int heightTarget = (int) (heightInches * ELEVATOR_COUNTS_PER_INCH);
+        int currentPosition = elevatorMotor.getCurrentPosition();
+
+        // now we need to adjust for elevator angle
+        // use ASA theorem
+
+        // if we are close complete
+        if (Math.abs(heightTarget-currentPosition) <= 10) {
+            elevatorMotor.setPower(0);
+            elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            return true;
+        } else {
+            elevatorMotor.setTargetPosition(heightTarget);
+            elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+        return false;
+    }
+
 
 
     private void encoderDrive(double speed,
@@ -138,7 +204,6 @@ public class Commands extends HardwareMappingTank {
         rightRearMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        //  sleep(250);   // optional pause after each move
     }
 }
 
