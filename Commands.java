@@ -3,6 +3,11 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
 public class Commands extends HardwareMappingTank {
 
     static final double COUNTS_PER_MOTOR_REV = 1440;    // eg: TETRIX Motor Encoder
@@ -38,6 +43,14 @@ public class Commands extends HardwareMappingTank {
 
     public void rotateClockwise(double power, double distance, double timeout) {
         this.encoderDrive(power, distance, -distance, timeout);
+    }
+
+    public void rotateClockwiseGyro(double power,double heading,double timeout){
+        this.gyroTurn(power,heading,timeout);
+    }
+
+    public void rotateCounterClockwiseGyro(double power,double heading,double timeout){
+        this.gyroTurn(-power,heading,timeout);
     }
 
     public void duckCarouselClockwise(double power) {
@@ -220,6 +233,38 @@ public class Commands extends HardwareMappingTank {
         rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
+
+    private void gyroTurn(double speed, double heading, double timeout){
+
+        runtime.reset();
+
+        while(Math.abs(getError(heading)) >= 2 && (runtime.seconds() < timeout)){
+            leftFrontMotor.setPower(speed);
+            leftRearMotor.setPower(speed);
+            rightFrontMotor.setPower(-speed);
+            rightRearMotor.setPower(-speed);
+        }
+
+        leftFrontMotor.setPower(0);
+        leftRearMotor.setPower(0);
+        rightFrontMotor.setPower(0);
+        rightRearMotor.setPower(0);
+
+    }
+
+    public double getError(double targetAngle) {
+
+        Orientation angles;
+        double robotError;
+
+        // calculate error in -179 to +180 range  (
+        angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        robotError = targetAngle - angles.firstAngle;
+        while (robotError > 180)  robotError -= 360;
+        while (robotError <= -180) robotError += 360;
+        return robotError;
+    }
+
 }
 
 

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -21,6 +22,8 @@ public class HardwareMappingTank
     public DcMotor elevatorMotor = null;
     public CRServo intakeServo = null;
     public Servo clawServo = null;
+
+    public BNO055IMU imu = null;
 
     /* local OpMode members. */
     HardwareMap hwMap           =  null;
@@ -45,6 +48,12 @@ public class HardwareMappingTank
         carouselMotor = setupMotor("carouselMotor", DcMotor.Direction.FORWARD, 0, false,true);
         intakeServo = setupCRServo("intakeServo",  0);
         clawServo = setupServo("clawServo",  0);
+
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+
+        imu = hwMap.get(BNO055IMU.class,"imu");
+        imu.initialize(parameters);
     }
 
     /* Init Motor, set direction, initial power and encoder runmode (if applicable)
