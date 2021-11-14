@@ -9,7 +9,7 @@ public class TeleOpTankTestDrive extends LinearOpMode {
 
     /* Declare OpMode members. */
     HardwareMappingTank robot           = new HardwareMappingTank();   // Use our hardware mapping
-    Commands commands = new Commands();  
+    Commands commands = new Commands();
     //FieldNavigation fieldNav = new FieldNavigation();
 
     @Override
@@ -22,7 +22,7 @@ public class TeleOpTankTestDrive extends LinearOpMode {
          */
         robot.init(hardwareMap);
         commands.init(hardwareMap);
-        
+
         //fieldNav.startTracking();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -32,15 +32,17 @@ public class TeleOpTankTestDrive extends LinearOpMode {
             //Driver controller ---------------------
             if (gamepad1.y){
                 // TODO determine red or blue to turn correctly
-                commands.duckCarouselClockwise(50);
+                commands.duckCarouselClockwise(1);
             }
-            
+            else
+                commands.duckCarouselClockwise(0);
+
             // arcade drive controls
             driveLeftSpeed = -(gamepad1.left_stick_y - gamepad1.left_stick_x);
             driveRightSpeed = -(gamepad1.left_stick_y + gamepad1.left_stick_x);
             telemetry.addData("leftstick - y ", gamepad1.left_stick_y);
             telemetry.addData("leftstick - x", gamepad1.left_stick_x);
-            telemetry.update(); 
+            telemetry.update();
 
             // tank drive controls
             //driveLeftSpeed = -gamepad1.left_stick_y;
@@ -51,7 +53,8 @@ public class TeleOpTankTestDrive extends LinearOpMode {
             robot.rightFrontMotor.setPower(driveRightSpeed);
             robot.leftRearMotor.setPower(driveLeftSpeed);
             robot.leftFrontMotor.setPower(driveLeftSpeed);
-           
+
+
             //Co-Driver controller -------------------
             if (gamepad2 != null){
                 if (gamepad2.right_bumper){
@@ -69,9 +72,20 @@ public class TeleOpTankTestDrive extends LinearOpMode {
                 if (gamepad2.x){
                     //move to floor 4
                 }
-                if (gamepad2.right_stick_y !=0) {
-                    //Move elevator up/down
+                if (gamepad2.right_stick_y >= .1 || gamepad2.right_stick_y <= -.1 ) {
+                    if(gamepad2.right_stick_y < -.1 )
+                    {
+                        commands.elevatorUp();
+                    }
+                    else if(gamepad2.right_stick_y  > .1 )
+                    {
+                        commands.elevatorDown();
+                    }
                 }
+                else {
+                    commands.elevatorStop();
+                }
+
                 if (gamepad2.dpad_up) {
                     commands.openClaw();
                 }
@@ -82,7 +96,7 @@ public class TeleOpTankTestDrive extends LinearOpMode {
                     //intake
                 }
             }
-             
+
 
             // TODO restore fieldNav if we decide to use it
             /*
@@ -97,8 +111,8 @@ public class TeleOpTankTestDrive extends LinearOpMode {
                 telemetry.update();
             }
             */
-            
-            
+
+
             // Pace this loop so jaw action is reasonable speed.
             sleep(50);
         }
