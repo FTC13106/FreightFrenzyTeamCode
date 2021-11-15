@@ -24,21 +24,19 @@ public class AutonomousBlueLeft extends LinearOpMode {
             // move of the wall 5
             commands.moveForward(0.5,5,5);
             //face the hub
-            commands.rotateClockwise(0.5,40,8);
+            commands.rotateClockwiseGyro(0.2,330,8);
             //kiss the hub
             commands.moveForward(0.5,24,8);
+
             //drop the box
+
             // clear the hub
             commands.moveBackward(0.5,5,3);
             //turn to face the warehouse
-            commands.rotateCounterClockwise(0.5,60,10);
+            commands.rotateCounterClockwiseGyro(0.2,90,10);
             //go to the warehouse
             commands.moveForward(0.5,45,11);
 
-
-//            commands.moveForward(0.5, 2,8);
-//            commands.rotateCounterClockwise(0.5, 18, 5);
-//            commands.moveForward(0.5, 40,8);
             sleep(30000);
         }
     }

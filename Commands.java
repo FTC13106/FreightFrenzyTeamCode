@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 public class Commands extends HardwareMappingTank {
 
     static final double COUNTS_PER_MOTOR_REV = 1440;    // eg: TETRIX Motor Encoder
-    static final double DRIVE_GEAR_REDUCTION = 2.0;     // This is < 1.0 if geared UP
+    static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
     static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
@@ -45,10 +45,26 @@ public class Commands extends HardwareMappingTank {
         this.encoderDrive(power, distance, -distance, timeout);
     }
 
+    /**
+     * Init of the robot always zero's out the heading
+     * This will turn the robot Clockwise direction until
+     * the gyro is at this heading within HEADING_ERROR
+     * @param power [-1..1]
+     * @param heading [0..360] heading based on init of robot
+     * @param timeout seconds until abort for Autonomous
+     */
     public void rotateClockwiseGyro(double power,double heading,double timeout){
         this.gyroTurn(power,heading,timeout);
     }
 
+    /**
+     * Init of the robot always zero's out the heading
+     * This will turn the robot Counter Clockwise direction until
+     * the gyro is at this heading within HEADING_ERROR
+     * @param power [-1..1]
+     * @param heading [0..360] heading based on init of robot
+     * @param timeout seconds until abort for Autonomous
+     */
     public void rotateCounterClockwiseGyro(double power,double heading,double timeout){
         this.gyroTurn(-power,heading,timeout);
     }
@@ -238,7 +254,7 @@ public class Commands extends HardwareMappingTank {
 
         runtime.reset();
 
-        while(Math.abs(getError(heading)) >= 2 && (runtime.seconds() < timeout)){
+        while(Math.abs(getError(heading)) >= 5 && (runtime.seconds() < timeout)){
             leftFrontMotor.setPower(speed);
             leftRearMotor.setPower(speed);
             rightFrontMotor.setPower(-speed);
@@ -260,8 +276,6 @@ public class Commands extends HardwareMappingTank {
         // calculate error in -179 to +180 range  (
         angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         robotError = targetAngle - angles.firstAngle;
-        while (robotError > 180)  robotError -= 360;
-        while (robotError <= -180) robotError += 360;
         return robotError;
     }
 

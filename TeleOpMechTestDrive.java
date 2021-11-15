@@ -2,11 +2,12 @@ package org.firstinspires.ftc.teamcode;
 
 import static java.lang.Math.abs;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name="TeleOp Mech", group="Mech")
-//@Disabled
+@Disabled
 public class TeleOpMechTestDrive extends LinearOpMode {
 
     /* Declare OpMode members. */

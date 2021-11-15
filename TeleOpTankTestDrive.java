@@ -3,6 +3,11 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
 @TeleOp(name="TeleOp: Tank", group="Tank")
 //@Disabled
 public class TeleOpTankTestDrive extends LinearOpMode {
@@ -16,7 +21,7 @@ public class TeleOpTankTestDrive extends LinearOpMode {
     public void runOpMode() {
         double driveRightSpeed;
         double driveLeftSpeed;
-
+        Orientation angles;
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
          */
@@ -32,15 +37,19 @@ public class TeleOpTankTestDrive extends LinearOpMode {
             //Driver controller ---------------------
             if (gamepad1.y){
                 // TODO determine red or blue to turn correctly
-                commands.duckCarouselClockwise(50);
+//                commands.duckCarouselClockwise(50);
             }
             
             // arcade drive controls
             driveLeftSpeed = -(gamepad1.left_stick_y - gamepad1.left_stick_x);
             driveRightSpeed = -(gamepad1.left_stick_y + gamepad1.left_stick_x);
+            angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             telemetry.addData("leftstick - y ", gamepad1.left_stick_y);
             telemetry.addData("leftstick - x", gamepad1.left_stick_x);
-            telemetry.update(); 
+            telemetry.addData("z" , angles.firstAngle);
+            telemetry.addData("x" , angles.secondAngle);
+            telemetry.addData("y" , angles.thirdAngle);
+            telemetry.update();
 
             // tank drive controls
             //driveLeftSpeed = -gamepad1.left_stick_y;
@@ -73,10 +82,10 @@ public class TeleOpTankTestDrive extends LinearOpMode {
                     //Move elevator up/down
                 }
                 if (gamepad2.dpad_up) {
-                    commands.openClaw();
+//                    commands.openClaw();
                 }
                 if (gamepad2.dpad_down) {
-                    commands.closeClaw();
+//                    commands.closeClaw();
                 }
                 if (gamepad2.left_stick_x !=0){
                     //intake
