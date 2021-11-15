@@ -37,7 +37,9 @@ public class TeleOpTankTestDrive extends LinearOpMode {
             //Driver controller ---------------------
             if (gamepad1.y){
                 // TODO determine red or blue to turn correctly
-//                commands.duckCarouselClockwise(50);
+                commands.duckCarouselClockwise(50);
+            }else{
+                commands.duckCarouselClockwise(0);
             }
             
             // arcade drive controls
@@ -78,14 +80,22 @@ public class TeleOpTankTestDrive extends LinearOpMode {
                 if (gamepad2.x){
                     //move to floor 4
                 }
-                if (gamepad2.right_stick_y !=0) {
-                    //Move elevator up/down
+
+                if (gamepad2.right_stick_y >= .1 || gamepad2.right_stick_y <= -.1) {
+                    if (gamepad2.right_stick_y < -.1) {
+                        commands.elevatorUp();
+                    } else if (gamepad2.right_stick_y > .1) {
+                        commands.elevatorDown();
+                    }
+                } else {
+                    commands.elevatorStop();
                 }
+
                 if (gamepad2.dpad_up) {
-//                    commands.openClaw();
+                    commands.openClaw();
                 }
                 if (gamepad2.dpad_down) {
-//                    commands.closeClaw();
+                    commands.closeClaw();
                 }
                 if (gamepad2.left_stick_x !=0){
                     //intake
