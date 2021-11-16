@@ -65,19 +65,19 @@ public class TeleOpTankTestDrive extends LinearOpMode {
            
             //Co-Driver controller -------------------
             if (gamepad2 != null){
-                if (gamepad2.right_bumper){
+                if (gamepad2.a){
                     //move to floor 0
                 }
-                if (gamepad2.a){
+                if (gamepad2.b){
                     //move to floor 1
                 }
-                if (gamepad2.b){
+                if (gamepad2.x){
                     //move to floor 2
                 }
                 if (gamepad2.y){
                     //move to floor 3
                 }
-                if (gamepad2.x){
+                if (gamepad2.left_bumper){
                     //move to floor 4
                 }
 
