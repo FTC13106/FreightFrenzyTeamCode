@@ -10,7 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 public class Commands extends HardwareMappingTank {
 
-    static final double COUNTS_PER_MOTOR_REV = 1440;    // eg: TETRIX Motor Encoder
+    static final double COUNTS_PER_MOTOR_REV = 960;    // eg: TETRIX Motor Encoder
     static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
     static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
@@ -78,11 +78,15 @@ public class Commands extends HardwareMappingTank {
     }
 
     public void closeClaw(){
-        clawServo.setPosition(1);
+        clawServo.setPower(1);
     }
 
     public void openClaw(){
-        clawServo.setPosition(0);
+        clawServo.setPower(-1);
+    }
+
+    public void stopClaw(){
+        clawServo.setPower(0);
     }
 
     public void elevatorUp(){
@@ -105,18 +109,29 @@ public class Commands extends HardwareMappingTank {
     }
 
     public void intakeOn(){
-        if(intakeServo != null){
-            intakeServo.setPower(0.5);
+        if(intakeServo1 != null){
+            intakeServo1.setPower(0.5);
         }
+        if(intakeServo2 != null){
+            intakeServo2.setPower(-0.5);
+        }
+
     }
     public void releaseIntakeServo(){
-        if(intakeServo != null) {
-            intakeServo.setPower(-0.5);
+        if(intakeServo1 != null) {
+            intakeServo1.setPower(-0.5);
         }
+        if(intakeServo2 != null) {
+            intakeServo2.setPower(0.5);
+        }
+
     }
     public void stopIntakeServo(){
-        if(intakeServo != null) {
-            intakeServo.setPower(0);
+        if(intakeServo1 != null) {
+            intakeServo1.setPower(0);
+        }
+        if(intakeServo2 != null) {
+            intakeServo2.setPower(0);
         }
     }
 

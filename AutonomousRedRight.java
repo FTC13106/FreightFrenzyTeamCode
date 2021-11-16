@@ -32,7 +32,7 @@ public class AutonomousRedRight extends LinearOpMode {
             // clear the hub
             commands.moveBackward(0.5,5,3);
             //turn to face the warehouse
-            commands.rotateClockwiseGyro(0.2,250,10);
+            commands.rotateClockwiseGyro(0.2,-90,10);
             //go to the warehouse
             commands.moveForward(0.5,45,11);
 

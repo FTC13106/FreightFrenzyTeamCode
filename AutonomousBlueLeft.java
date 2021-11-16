@@ -24,7 +24,7 @@ public class AutonomousBlueLeft extends LinearOpMode {
             // move of the wall 5
             commands.moveForward(0.5,5,5);
             //face the hub
-            commands.rotateClockwiseGyro(0.2,330,8);
+            commands.rotateClockwiseGyro(0.2,-30,8);
             //kiss the hub
             commands.moveForward(0.5,24,8);
 

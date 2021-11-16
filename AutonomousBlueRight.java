@@ -30,7 +30,7 @@ public class AutonomousBlueRight extends LinearOpMode {
             //face the shipping hub
             commands.rotateCounterClockwiseGyro(.2,30,10);
             //go to shipping hub
-            commands.moveForward(0.5, 25, 8);
+            commands.moveForward(0.5, 20, 8);
 
             //drop preload box
 
@@ -44,21 +44,21 @@ public class AutonomousBlueRight extends LinearOpMode {
             //moving the robot out of the way
             commands.rotateCounterClockwiseGyro(.2,90,10);
             //back up to carousel
-            commands.moveBackward(0.5,12, 8);
+            commands.moveBackward(0.5,9, 8);
 
             //turn on the duck spinner
             commands.duckCarouselClockwise(0.5);
             //wait for duck to fall off
-            sleep(4000); // 4 seconds?
+            sleep(6000); // 6 seconds?
             // turn off Carousel motor
             commands.duckCarouselClockwise(0);
 
             //move the robot off the carousel
-            commands.moveForward(0.5, 3, 8);
+            commands.moveForward(0.5, 7, 8);
             //line up to storage unit
             commands.rotateClockwiseGyro(0.2, 0,7);
             //move into the storage unit
-            commands.moveForward(0.5, 21, 8);
+            commands.moveForward(0.5, 16, 8);
             //sleep
 
             sleep(30000);

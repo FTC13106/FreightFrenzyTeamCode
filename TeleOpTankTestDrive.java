@@ -93,12 +93,16 @@ public class TeleOpTankTestDrive extends LinearOpMode {
 
                 if (gamepad2.dpad_up) {
                     commands.openClaw();
-                }
-                if (gamepad2.dpad_down) {
+                }else if (gamepad2.dpad_down) {
                     commands.closeClaw();
+                }else{
+                    commands.stopClaw();
                 }
-                if (gamepad2.left_stick_x !=0){
+                if (gamepad2.right_bumper ){
                     //intake
+                    commands.intakeOn();
+                }else{
+                    commands.stopIntakeServo();
                 }
             }
              
