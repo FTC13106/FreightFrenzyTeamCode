@@ -104,7 +104,7 @@ public class TeleOpDrive extends LinearOpMode {
                 }else if (gamepad2.dpad_down) {
                     commands.closeClaw();
                 }else{
-                    commands.stopClaw();
+                    //commands.stopClaw();
                 }
 
                 if (gamepad2.right_bumper ){
