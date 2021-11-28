@@ -21,7 +21,7 @@ public class HardwareMapping
     public WebcamName webcamName = null;
     public DcMotor elevatorMotor = null;
     public CRServo intakeServo1 = null;
-    public CRServo clawServo = null;
+    public Servo clawServo = null;
     public CRServo intakeServo2 = null;
 
     public BNO055IMU imu = null;
@@ -49,7 +49,7 @@ public class HardwareMapping
         carouselMotor = setupMotor("carouselMotor", DcMotor.Direction.FORWARD, 0, false,true);
         intakeServo1 = setupCRServo("intakeServo1",  0);
         intakeServo2 = setupCRServo("intakeServo2",  0);
-        clawServo = setupCRServo("clawServo",  0);
+        clawServo = setupServo("clawServo",  0.4);
 
 
 
@@ -102,7 +102,7 @@ public class HardwareMapping
     /* Init Servo and set initial position
      * @return the configured Servo or null if the servo is not found
      */
-    private Servo setupServo(String name, int initialPosition){
+    private Servo setupServo(String name, double initialPosition){
         try {
             Servo servo = hwMap.get(Servo.class, name);
             servo.setPosition(initialPosition);
