@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode20142;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -19,14 +18,14 @@ public class Commands extends HardwareMapping {
     static final double DRIVE_SPEED = 0.6;
     static final double TURN_SPEED = 0.5;
 
-    static final double ELEVATOR_WHEEL_DIAMETER_INCHES = 0.5;
-    static final double ELEVATOR_GEAR_REDUCTION = 2.0;     // This is < 1.0 if geared UP
+    static final double ELEVATOR_WHEEL_DIAMETER_INCHES = 0.25;
+    static final double ELEVATOR_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
     static final double ELEVATOR_COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * ELEVATOR_GEAR_REDUCTION) /
             (ELEVATOR_WHEEL_DIAMETER_INCHES * 3.1415);
 
     static final double ELEVATOR_ANGLE = 1.0; // angle of Elevator as sin(degrees)
 
-    static final double FLOOR_OFFSET = 1.0;  // extra height to get over the shipping hub lip
+    static final double FLOOR_OFFSET = -4.0;  // extra height to get over the shipping hub lip
     static final double FLOOR_1 = 3.0;
     static final double FLOOR_2 = 8.5;
     static final double FLOOR_3 = 14.75;
@@ -82,16 +81,12 @@ public class Commands extends HardwareMapping {
         carouselMotor.setPower(-power);
     }
 
-    public void closeClaw(){
-        clawServo.setPower(1);
+    public void closeClaw() {
+        clawServo.setPosition(1);
     }
 
     public void openClaw(){
-        clawServo.setPower(-1);
-    }
-
-    public void stopClaw(){
-        clawServo.setPower(0);
+        clawServo.setPosition(0.4);
     }
 
     /* Elevator */
