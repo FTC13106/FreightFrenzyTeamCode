@@ -20,9 +20,9 @@ public class HardwareMapping
     public DcMotor  carouselMotor = null;
     public WebcamName webcamName = null;
     public DcMotor elevatorMotor = null;
-    public CRServo intakeServo1 = null;
-    public CRServo clawServo = null;
-    public CRServo intakeServo2 = null;
+    public Servo intakeServo1 = null;
+    public Servo clawServo = null;
+//    public CRServo intakeServo2 = null;
 
     public BNO055IMU imu = null;
 
@@ -47,9 +47,9 @@ public class HardwareMapping
         webcamName = setupWebcam("Webcam 1");
         elevatorMotor = setupMotor("elevatorMotor", DcMotor.Direction.FORWARD, 0, true,true);
         carouselMotor = setupMotor("carouselMotor", DcMotor.Direction.FORWARD, 0, false,true);
-        intakeServo1 = setupCRServo("intakeServo1",  0);
-        intakeServo2 = setupCRServo("intakeServo2",  0);
-        clawServo = setupCRServo("clawServo",  0);
+        intakeServo1 = setupServo("intakeServo1", 0);
+//        intakeServo2 = setupCRServo("intakeServo2",  0);
+        clawServo = setupServo("clawServo",  0);
 
 
 

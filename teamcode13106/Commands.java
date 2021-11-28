@@ -82,15 +82,11 @@ public class Commands extends HardwareMapping {
     }
 
     public void closeClaw(){
-        clawServo.setPower(1);
+        clawServo.setPosition(1);
     }
 
     public void openClaw(){
-        clawServo.setPower(-1);
-    }
-
-    public void stopClaw(){
-        clawServo.setPower(0);
+        clawServo.setPosition(-1);
     }
 
     /* Elevator */
@@ -131,33 +127,18 @@ public class Commands extends HardwareMapping {
     }
 
     /* Intake */
-    public void intakeOn(){
+    public void intakeUp(){
         if(intakeServo1 != null){
-            intakeServo1.setPower(0.5);
-        }
-        if(intakeServo2 != null){
-            intakeServo2.setPower(-0.5);
+            intakeServo1.setPosition(1);
         }
 
     }
-    public void releaseIntakeServo(){
-        if(intakeServo1 != null) {
-            intakeServo1.setPower(-0.5);
-        }
-        if(intakeServo2 != null) {
-            intakeServo2.setPower(0.5);
+
+    public void intakeDown() {
+        if (intakeServo1 != null) {
+            intakeServo1.setPosition(0);
         }
     }
-
-    public void stopIntakeServo(){
-        if(intakeServo1 != null) {
-            intakeServo1.setPower(0);
-        }
-        if(intakeServo2 != null) {
-            intakeServo2.setPower(0);
-        }
-    }
-
     /**
      * Assume that the elevator encoder was reset at power up
      * so position is 0.

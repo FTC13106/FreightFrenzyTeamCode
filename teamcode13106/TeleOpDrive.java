@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-@TeleOp(name="TeleOpDrive", group="TeleOp")
+@TeleOp(name="TeleOp", group="TeleOp")
 //@Disabled
 public class TeleOpDrive extends LinearOpMode {
 
@@ -39,17 +39,12 @@ public class TeleOpDrive extends LinearOpMode {
             // Rotate the carousel for blue side
             if (gamepad1.x){
                 commands.duckCarouselClockwise(50);
-            }else{
-                commands.duckCarouselClockwise(0);
-            }
-
-            // Rotate the carousel for red side
-            if (gamepad1.b){
+            }else if(gamepad1.b){
                 commands.duckCarouselCounterClockwise(50);
             }else{
                 commands.duckCarouselCounterClockwise(0);
             }
-            
+
             // arcade drive controls
             driveLeftSpeed = -(gamepad1.left_stick_y - gamepad1.left_stick_x);
             driveRightSpeed = -(gamepad1.left_stick_y + gamepad1.left_stick_x);
@@ -103,15 +98,13 @@ public class TeleOpDrive extends LinearOpMode {
                     commands.openClaw();
                 }else if (gamepad2.dpad_down) {
                     commands.closeClaw();
-                }else{
-                    commands.stopClaw();
                 }
 
                 if (gamepad2.right_bumper ){
                     //intake
-                    commands.intakeOn();
+                    commands.intakeUp();
                 }else{
-                    commands.stopIntakeServo();
+                    commands.intakeDown();
                 }
 
                 /*
