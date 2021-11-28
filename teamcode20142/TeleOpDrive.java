@@ -39,12 +39,7 @@ public class TeleOpDrive extends LinearOpMode {
             // Rotate the carousel for blue side
             if (gamepad1.x){
                 commands.duckCarouselClockwise(50);
-            }else{
-                commands.duckCarouselClockwise(0);
-            }
-
-            // Rotate the carousel for red side
-            if (gamepad1.b){
+            }else if (gamepad1.b){
                 commands.duckCarouselCounterClockwise(50);
             }else{
                 commands.duckCarouselCounterClockwise(0);
