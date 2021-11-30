@@ -25,11 +25,11 @@ public class Commands extends HardwareMapping {
 
     static final double ELEVATOR_ANGLE = 1.0; // angle of Elevator as sin(degrees)
 
-    static final double FLOOR_OFFSET = -4.0;  // extra height to get over the shipping hub lip
+    static final double FLOOR_OFFSET = -5.0;  // extra height to get over the shipping hub lip
     static final double FLOOR_1 = 3.0;
     static final double FLOOR_2 = 8.5;
     static final double FLOOR_3 = 14.75;
-    static final double FLOOR_4 = 20.25;
+    //static final double FLOOR_4 = 20.25;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -40,7 +40,7 @@ public class Commands extends HardwareMapping {
     public void moveBackward(double power, double distance, double timeout) {
         this.encoderDrive(power, -distance, -distance, timeout);
     }
-
+/*
     public void rotateCounterClockwise(double power, double distance, double timeout) {
         this.encoderDrive(power, -distance, distance, timeout);
     }
@@ -48,6 +48,7 @@ public class Commands extends HardwareMapping {
     public void rotateClockwise(double power, double distance, double timeout) {
         this.encoderDrive(power, distance, -distance, timeout);
     }
+*/
 
     /**
      * Init of the robot always zero's out the heading
@@ -84,7 +85,9 @@ public class Commands extends HardwareMapping {
     public void closeClaw() {
         clawServo.setPosition(1);
     }
-
+    public void openClawMidway(){
+        clawServo.setPosition(0.7);
+    }
     public void openClaw(){
         clawServo.setPosition(0.4);
     }
@@ -92,12 +95,12 @@ public class Commands extends HardwareMapping {
     /* Elevator */
     public void elevatorUp(){
         elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        elevatorMotor.setPower(0.5);
+        elevatorMotor.setPower(1);
     }
 
     public void elevatorDown(){
         elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        elevatorMotor.setPower(-0.5);
+        elevatorMotor.setPower(-1);
     }
 
     public void elevatorStop(){
@@ -196,7 +199,7 @@ public class Commands extends HardwareMapping {
      * @param heightInches double desired inches off the ground
      * @return boolean complete
      */
-    public boolean teleopElevatorPosition(double speed, double heightInches) {
+/*    public boolean teleopElevatorPosition(double speed, double heightInches) {
         int heightTarget = (int) (heightInches * ELEVATOR_COUNTS_PER_INCH);
         int currentPosition = elevatorMotor.getCurrentPosition();
 
@@ -214,7 +217,7 @@ public class Commands extends HardwareMapping {
         }
         return false;
     }
-
+*/
     /**
      * Should be called to zero the encoder
      * Example at the start of Autonomous
