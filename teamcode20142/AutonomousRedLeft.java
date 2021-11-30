@@ -14,7 +14,6 @@ public class AutonomousRedLeft extends LinearOpMode {
          * The init() method of the hardware class does all the work here
          */
         commands.init(hardwareMap);
-        commands.resetElevatorPosition();
         objectDetection.init(hardwareMap);
         telemetry.addData("webcam", "ready");
         telemetry.update();
@@ -48,27 +47,27 @@ public class AutonomousRedLeft extends LinearOpMode {
             //drop preload box
             commands.openClaw();
             //move away from the shipping hub
-            commands.moveBackward(0.5,18, 8);
+            commands.moveBackward(0.5,5, 8);
             //turn to face the carousel
-            commands.rotateCounterClockwiseGyro(0.2, 85,7);
-
-            //reset the elevator
-            commands.elevatorMoveToFloor(1,5);
-
+            commands.rotateClockwiseGyro(0.2, -70,7);
             //drive towards carousel
-            commands.moveForward(0.5,23, 8);
+            commands.moveBackward(0.5,32, 8);
+            //moving the robot out of the way
+            commands.rotateCounterClockwiseGyro(0.2, 0,7);
+            //back up to carousel
+            commands.moveBackward(0.5,12, 8);
 
             //turn on the duck spinner
-            commands.duckCarouselCounterClockwise(0.5);
+            commands.duckCarouselClockwise(0.5);
             //wait for duck to fall off
             sleep(6000); // 4 seconds?
             // turn off Carousel motor
-            commands.duckCarouselCounterClockwise(0);
+            commands.duckCarouselClockwise(0);
 
             //move the robot off the carousel
-            commands.moveBackward(0.5, 5, 8);
+            commands.moveForward(0.5, 7, 8);
             //line up to storage unit
-            commands.rotateClockwiseGyro(0.2, 0,7);
+            commands.rotateCounterClockwiseGyro(0.2, 0,7);
             //move into the storage unit
             commands.moveForward(0.5, 21, 8);
             //sleep
