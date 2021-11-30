@@ -33,7 +33,8 @@ public class TeleOpDrive extends LinearOpMode {
         waitForStart();
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-
+            // TODO remove later
+            commands.resetElevatorPosition();
             //Driver controller ---------------------
 
             // Rotate the carousel for blue side
@@ -69,66 +70,43 @@ public class TeleOpDrive extends LinearOpMode {
             //Co-Driver controller -------------------
             if (gamepad2 != null){
                 if (gamepad2.a){
-                    //move to floor 0
+                    commands.openClaw();
                 }
                 if (gamepad2.b){
-                    //move to floor 1
-                }
-                if (gamepad2.x){
-                    //move to floor 2
+                    commands.closeClaw();
                 }
                 if (gamepad2.y){
-                    //move to floor 3
-                }
-                if (gamepad2.left_bumper){
-                    //move to floor 4
+                    commands.openClawMidway();
                 }
 
                 if (gamepad2.right_stick_y >= .1 || gamepad2.right_stick_y <= -.1) {
                     if (gamepad2.right_stick_y < -.1) {
                         commands.elevatorUp();
+                        telemetry.addData("elevator",robot.elevatorMotor.getCurrentPosition());
+                        telemetry.update();
                     } else if (gamepad2.right_stick_y > .1) {
                         commands.elevatorDown();
+                        telemetry.addData("elevator",robot.elevatorMotor.getCurrentPosition());
+                        telemetry.update();
                     }
                 } else {
                     commands.elevatorStop();
+                    telemetry.addData("elevator",robot.elevatorMotor.getCurrentPosition());
+                    telemetry.update();
                 }
 
                 if (gamepad2.dpad_up) {
-                    commands.openClaw();
-                }else if (gamepad2.dpad_down) {
-                    commands.closeClaw();
-                }else{
-                    //commands.stopClaw();
-                }
-
-                if (gamepad2.right_bumper ){
-                    //intake
-                    commands.intakeOn();
-                }else{
-                    commands.stopIntakeServo();
-                }
-
-                /*
-                //intake In
-                if (gamepad2.dpad_down ){
-                    commands.intakeOn();
-                }else{
-                    commands.stopIntakeServo();
-                }
-
-                //intake Out
-                if (gamepad2.dpad_up ){
-
                     commands.releaseIntakeServo();
+                }else if (gamepad2.dpad_down) {
+                    commands.intakeOn();
                 }else{
                     commands.stopIntakeServo();
                 }
-                */
             }
              
 
             // TODO restore fieldNav if we decide to use it
+
             /*
             float[] navData = fieldNav.getLocation();
             if(navData != null){
