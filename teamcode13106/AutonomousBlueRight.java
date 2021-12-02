@@ -15,6 +15,7 @@ public class AutonomousBlueRight extends LinearOpMode {
          */
         commands.init(hardwareMap);
         objectDetection.init(hardwareMap);
+        commands.resetElevatorPosition();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -27,43 +28,56 @@ public class AutonomousBlueRight extends LinearOpMode {
             telemetry.addData("duck location", duckLocation);
             telemetry.update();
             //go to shipping hub, drop off preload, drive to carosel, park in *warehouse?
-            //get off the wall
-            commands.moveForward(0.5, 7, 8);
-            //face the shipping hub
-            commands.rotateCounterClockwiseGyro(.2,30,10);
-            //go to shipping hub
-            commands.moveForward(0.5, 20, 8);
+            //close claw
+            commands.closeClaw();
+            //raise intake
+            commands.intakeUp();
 
-            // move the elevator to correct position. floor1=3in,floor2=8.5in,floor3=14.75in,floor4=20.25
+            //get off the wall
+            commands.moveForward(commands.AUTON_DRIVE_SPEED, 7, 8);
+            //face the shipping hub
+            commands.rotateCounterClockwiseGyro(commands.AUTON_ROTATE_SPEED,30,10);
+            //raise arm off floor
+            commands.elevatorMoveToHeight(commands.AUTON_ELEVATOR_SPEED,200,3);
+            //lower intake
+            commands.intakeDown();
+            //raise arm to predetermined floor
             commands.elevatorMoveToFloor(floor,5);
+            //go to shipping hub
+            commands.moveForward(commands.AUTON_DRIVE_SPEED, 20, 8);
 
             //drop preload box
             commands.openClaw();
 
             //move away from the shipping hub
-            commands.moveBackward(0.5,5, 8);
+            commands.moveBackward(commands.AUTON_DRIVE_SPEED,5, 8);
             //turn to face the carousel
-            commands.rotateCounterClockwiseGyro(.2,70,10);
+            commands.rotateCounterClockwiseGyro(commands.AUTON_ROTATE_SPEED,70,10);
             //drive towards carousel
-            commands.moveBackward(0.5,35, 8);
+            commands.moveBackward(commands.AUTON_DRIVE_SPEED,35, 8);
             //moving the robot out of the way
-            commands.rotateCounterClockwiseGyro(.2,90,10);
+            commands.rotateCounterClockwiseGyro(commands.AUTON_ROTATE_SPEED,90,10);
+            //lift the intake
+            commands.intakeUp();
+            // lower the elevator
+            commands.elevatorMoveToFloor(0,8);
+
             //back up to carousel
-            commands.moveBackward(0.5,9, 8);
+            commands.moveBackward(commands.AUTON_DRIVE_SPEED,9, 8);
 
             //turn on the duck spinner
-            commands.duckCarouselClockwise(0.5);
+            commands.duckCarouselClockwise(0.75);
             //wait for duck to fall off
             sleep(6000); // 6 seconds?
             // turn off Carousel motor
             commands.duckCarouselClockwise(0);
 
             //move the robot off the carousel
-            commands.moveForward(0.5, 7, 8);
+            commands.moveForward(commands.AUTON_DRIVE_SPEED, 7, 8);
             //line up to storage unit
-            commands.rotateClockwiseGyro(0.2, 0,7);
+            commands.rotateClockwiseGyro(commands.AUTON_ROTATE_SPEED, 0,7);
             //move into the storage unit
-            commands.moveForward(0.5, 16, 8);
+            commands.moveForward(commands.AUTON_DRIVE_SPEED, 16, 8);
             //sleep
             sleep(30000);
         }

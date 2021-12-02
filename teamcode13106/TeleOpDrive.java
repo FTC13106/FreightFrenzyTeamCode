@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode13106;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -27,7 +28,7 @@ public class TeleOpDrive extends LinearOpMode {
          */
         robot.init(hardwareMap);
         commands.init(hardwareMap);
-        
+        robot.elevatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //fieldNav.startTracking();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -38,9 +39,9 @@ public class TeleOpDrive extends LinearOpMode {
 
             // Rotate the carousel for blue side
             if (gamepad1.x){
-                commands.duckCarouselClockwise(50);
+                commands.duckCarouselClockwise(75);
             }else if(gamepad1.b){
-                commands.duckCarouselCounterClockwise(50);
+                commands.duckCarouselCounterClockwise(75);
             }else{
                 commands.duckCarouselCounterClockwise(0);
             }
@@ -54,6 +55,7 @@ public class TeleOpDrive extends LinearOpMode {
             telemetry.addData("z" , angles.firstAngle);
             telemetry.addData("x" , angles.secondAngle);
             telemetry.addData("y" , angles.thirdAngle);
+            telemetry.addData("arm", robot.elevatorMotor.getCurrentPosition());
             telemetry.update();
 
             // tank drive controls

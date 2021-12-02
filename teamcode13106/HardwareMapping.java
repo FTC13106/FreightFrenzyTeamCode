@@ -47,9 +47,10 @@ public class HardwareMapping
         webcamName = setupWebcam("Webcam 1");
         elevatorMotor = setupMotor("elevatorMotor", DcMotor.Direction.FORWARD, 0, true,true);
         carouselMotor = setupMotor("carouselMotor", DcMotor.Direction.FORWARD, 0, false,true);
-        intakeServo1 = setupServo("intakeServo1", 0);
-//        intakeServo2 = setupCRServo("intakeServo2",  0);
-        clawServo = setupServo("clawServo",  0);
+        intakeServo1 = setupServo("intakeServo1", 0.5); // when init raise the intake
+        clawServo = setupServo("clawServo",  1); // when init close the claw
+//        intakeServo1 = setupServo("intakeServo1", 0);
+//        clawServo = setupServo("clawServo",  0);
 
 
 
@@ -63,7 +64,7 @@ public class HardwareMapping
     /* Init Motor, set direction, initial power and encoder runmode (if applicable)
      * @return the configured DcMotor or null if the motor is not found
      */
-    private DcMotor setupMotor(String name, DcMotorSimple.Direction direction, int initialPower, boolean useEncoder, boolean brakeMode){
+    private DcMotor setupMotor(String name, DcMotorSimple.Direction direction, double initialPower, boolean useEncoder, boolean brakeMode){
         try {
             DcMotor motor = hwMap.get(DcMotor.class, name);
             motor.setDirection(direction);
@@ -88,7 +89,7 @@ public class HardwareMapping
     /* Init CRServo and set initial power
      * @return the configured CRServo or null if the servo is not found
      */
-    private CRServo setupCRServo(String name, int initialPower){
+    private CRServo setupCRServo(String name, double initialPower){
         try {
             CRServo servo = hwMap.get(CRServo.class, name);
             servo.setPower(initialPower);
@@ -102,7 +103,7 @@ public class HardwareMapping
     /* Init Servo and set initial position
      * @return the configured Servo or null if the servo is not found
      */
-    private Servo setupServo(String name, int initialPosition){
+    private Servo setupServo(String name, double initialPosition){
         try {
             Servo servo = hwMap.get(Servo.class, name);
             servo.setPosition(initialPosition);

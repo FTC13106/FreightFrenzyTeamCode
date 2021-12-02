@@ -140,13 +140,13 @@ public class ObjectDetection extends HardwareMapping {
                     // then parse through the markers and determine the distance between markers
                     // and the distance between marker and duck
                     // this will determine low level / mid level / high level
-                    if(recognition.getLabel().equals(LABELS[3])){
+                    if(recognition.getLabel().equals(LABELS[2])){
                         if (firstMarker == 0.0){
                             firstMarker = recognition.getLeft();
                         }else{
                             secondMarker = recognition.getLeft();
                         }
-                    }else if(recognition.getLabel().equals(LABELS[2])){
+                    }else if(recognition.getLabel().equals(LABELS[1])){
                         duck = recognition.getLeft();
                     }
 

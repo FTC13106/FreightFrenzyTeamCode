@@ -15,6 +15,7 @@ public class AutonomousBlueLeft extends LinearOpMode {
          */
         commands.init(hardwareMap);
         objectDetection.init(hardwareMap);
+        commands.resetElevatorPosition();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -27,26 +28,38 @@ public class AutonomousBlueLeft extends LinearOpMode {
             telemetry.addData("duck location", duckLocation);
             telemetry.update();
 
+            //close claw
+            commands.closeClaw();
+            //raise intake
+            commands.intakeUp();
+            //get off the wall
             // move off the wall 5
-            commands.moveForward(0.5,5,5);
+            commands.moveForward(commands.AUTON_DRIVE_SPEED,5,5);
             //face the hub
-            commands.rotateClockwiseGyro(0.2,-30,8);
-            //kiss the hub
-            commands.moveForward(0.5,24,8);
-
-            // move the elevator to correct position. floor1=3in,floor2=8.5in,floor3=14.75in,floor4=20.25
+            commands.rotateClockwiseGyro(commands.AUTON_ROTATE_SPEED,-30,8);
+            //raise arm off floor
+            commands.elevatorMoveToHeight(commands.AUTON_ELEVATOR_SPEED,200,3);
+            //lower intake
+            commands.intakeDown();
+            //raise arm to predetermined floor
             commands.elevatorMoveToFloor(floor,5);
+            //kiss the hub
+            commands.moveForward(commands.AUTON_DRIVE_SPEED,20,8);
 
             //drop the box
             commands.openClaw();
 
             // clear the hub
-            commands.moveBackward(0.5,5,3);
+            commands.moveBackward(commands.AUTON_DRIVE_SPEED,5,3);
 
             //turn to face the warehouse
-            commands.rotateCounterClockwiseGyro(0.2,90,10);
+            commands.rotateCounterClockwiseGyro(commands.AUTON_ROTATE_SPEED,90,10);
+            //lift the intake
+            commands.intakeUp();
+            // lower the elevator
+            commands.elevatorMoveToFloor(1,8);
             //go to the warehouse
-            commands.moveForward(0.5,45,11);
+            commands.moveForward(commands.AUTON_DRIVE_SPEED,45,11);
 
             sleep(30000);
         }
