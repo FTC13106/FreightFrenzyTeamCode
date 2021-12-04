@@ -13,17 +13,14 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 public class HardwareMapping
 {
     /* Public OpMode members. */
-    public DcMotor  leftFrontMotor   = null;
-    public DcMotor  leftRearMotor   = null;
-    public DcMotor  rightFrontMotor  = null;
-    public DcMotor  rightRearMotor  = null;
-    public DcMotor  carouselMotor = null;
+    public DcMotor leftFrontMotor = null;
+    public DcMotor leftRearMotor = null;
+    public DcMotor rightFrontMotor = null;
+    public DcMotor rightRearMotor = null;
+    public DcMotor carouselMotor = null;
     public WebcamName webcamName = null;
     public DcMotor elevatorMotor = null;
-    public CRServo intakeServo1 = null;
     public Servo clawServo = null;
-    public CRServo intakeServo2 = null;
-
     public BNO055IMU imu = null;
 
     /* local OpMode members. */
@@ -47,11 +44,7 @@ public class HardwareMapping
         webcamName = setupWebcam("Webcam 1");
         elevatorMotor = setupMotor("elevatorMotor", DcMotor.Direction.FORWARD, 0, true,true);
         carouselMotor = setupMotor("carouselMotor", DcMotor.Direction.FORWARD, 0, false,true);
-        intakeServo1 = setupCRServo("intakeServo1",  0);
-        intakeServo2 = setupCRServo("intakeServo2",  0);
         clawServo = setupServo("clawServo",  0.4);
-
-
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;

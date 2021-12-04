@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode20142;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name="A Vision Test", group="Pushbot")
+@Autonomous(name="Vision Test", group="Pushbot")
 public class Vision extends LinearOpMode {
     ObjectDetection objectDetection = new ObjectDetection();
 
@@ -23,14 +23,15 @@ public class Vision extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            int state = objectDetection.getDuckState();
-            float duckLocation = objectDetection.getDuckPosition();
+            float duckPosition = objectDetection.getDuckPosition();
+            int state = objectDetection.getDuckState(duckPosition);
+
             for (int i = 0; i<= 60; i++){
-                state = objectDetection.getDuckState();
-                duckLocation = objectDetection.getDuckPosition();
+                duckPosition = objectDetection.getDuckPosition();
+                state = objectDetection.getDuckState(duckPosition);
                 telemetry.addData("count ", i);
                 telemetry.addData("state ", state);
-                telemetry.addData("duck location", duckLocation);
+                telemetry.addData("duck location", duckPosition);
                 telemetry.update();
                 sleep(500);
             }

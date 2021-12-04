@@ -1,77 +1,63 @@
 package org.firstinspires.ftc.teamcode20142;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 @Autonomous(name="Autonomous Red Left", group="Pushbot")
-public class AutonomousRedLeft extends LinearOpMode {
-    Commands commands = new Commands();
-    ObjectDetection objectDetection = new ObjectDetection();
+public class AutonomousRedLeft extends AutonomousBase {
 
     @Override
     public void runOpMode() {
-        /* Initialize the hardware variables.
-         * The init() method of the hardware class does all the work here
-         */
-        commands.init(hardwareMap);
-        commands.resetElevatorPosition();
-        objectDetection.init(hardwareMap);
-        telemetry.addData("webcam", "ready");
-        telemetry.update();
+        // Initialize the hardware variables.
+        startupInit();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            //read barcode, go to shipping hub, drop off preload, drive to carousel, park in storage unit
+            // read barcode, go to shipping hub, drop off preload, drive to carousel, park in storage unit
 
             // get barcode floor
-            telemetry.addData("Reading barcode", "...");
-            telemetry.update();
-            int floor = objectDetection.getBarcodeFloor(objectDetection);
-            float duckLocation = objectDetection.duckLocation;
-            telemetry.addData("floor ", floor);
-            telemetry.addData("duck location", duckLocation);
-            telemetry.update();
+            int floor = readBarcodeFloor();
 
-            //close claw
-            commands.closeClaw();
-            //get off the wall
-            commands.moveForward(0.5, 7, 8);
-            // move the elevator to correct position. floor1=3in,floor2=8.5in,floor3=14.75in,floor4=20.25
-            commands.elevatorMoveToFloor(floor,5);
-            //face the shipping hub
-            commands.rotateClockwiseGyro(0.2, -30,7);
-            //go to shipping hub
-            commands.moveForward(0.5, 20, 8);
-            //drop preload box
+            // come out of package and move to floor
+            initToFloor(floor);
+
+            // face the shipping hub
+            commands.rotateClockwiseGyro(commands.AUTONOMOUS_TURN_SPEED, -30,7);
+            // go to shipping hub
+            commands.moveForward(commands.AUTONOMOUS_DRIVE_SPEED, 20, 8);
+            // drop preload box
             commands.openClaw();
-            //move away from the shipping hub
-            commands.moveBackward(0.5,18, 8);
-            //turn to face the carousel
-            commands.rotateCounterClockwiseGyro(0.2, 85,7);
+            // move away from the shipping hub
+            commands.moveBackward(commands.AUTONOMOUS_DRIVE_SPEED,18, 8);
 
-            //reset the elevator
-            commands.elevatorMoveToFloor(1,5);
+            // reset the elevator if above floor 1
+            if (floor>1) {
+                homeElevator(6);
+            }
 
-            //drive towards carousel
-            commands.moveForward(0.5,23, 8);
+            // turn to face the carousel
+            commands.rotateCounterClockwiseGyro(commands.AUTONOMOUS_TURN_SPEED, 85,7);
 
-            //turn on the duck spinner
-            commands.duckCarouselCounterClockwise(0.5);
-            //wait for duck to fall off
+            // drive towards carousel
+            commands.moveForward(commands.AUTONOMOUS_DRIVE_SPEED,20, 8);
+            // turn on the duck spinner
+            commands.duckCarouselCounterClockwise(commands.CAROUSEL_SPEED);
+            // wait for duck to fall off
             sleep(6000); // 4 seconds?
             // turn off Carousel motor
             commands.duckCarouselCounterClockwise(0);
 
-            //move the robot off the carousel
-            commands.moveBackward(0.5, 5, 8);
-            //line up to storage unit
-            commands.rotateClockwiseGyro(0.2, 0,7);
+            // move the robot off the carousel
+            commands.moveBackward(commands.AUTONOMOUS_DRIVE_SPEED, 4, 8);
+            // line up to storage unit
+            commands.rotateClockwiseGyro(commands.AUTONOMOUS_TURN_SPEED, 25,7);
             //move into the storage unit
-            commands.moveForward(0.5, 21, 8);
-            //sleep
+            commands.moveForward(commands.AUTONOMOUS_DRIVE_SPEED, 17, 8);
+            // line up to storage unit
+            commands.rotateClockwiseGyro(commands.AUTONOMOUS_TURN_SPEED, 0,7);
+            // sleep
             sleep(30000);
         }
     }

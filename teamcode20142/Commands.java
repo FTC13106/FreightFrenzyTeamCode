@@ -10,22 +10,24 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 public class Commands extends HardwareMapping {
 
-    static final double COUNTS_PER_MOTOR_REV = 960;    // eg: TETRIX Motor Encoder
+    static final double COUNTS_PER_MOTOR_REV = 960;    // eg: TETRIX Motor Encoder (40:1)
     static final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
     static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double DRIVE_SPEED = 0.6;
-    static final double TURN_SPEED = 0.5;
 
     static final double ELEVATOR_WHEEL_DIAMETER_INCHES = 0.25;
     static final double ELEVATOR_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
     static final double ELEVATOR_COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * ELEVATOR_GEAR_REDUCTION) /
             (ELEVATOR_WHEEL_DIAMETER_INCHES * 3.1415);
 
-    static final double ELEVATOR_ANGLE = 1.0; // angle of Elevator as sin(degrees)
+    static final double AUTONOMOUS_DRIVE_SPEED = .6;
+    static final double AUTONOMOUS_TURN_SPEED = .2;
+    static final double CAROUSEL_SPEED = .5;
 
-    static final double FLOOR_OFFSET = -5.0;  // extra height to get over the shipping hub lip
+    static final int ELEVATOR_MIN_HEIGHT = -3000;
+    static final int ELEVATOR_MAX_HEIGHT = 10000;
+    static final double FLOOR_OFFSET = -2.0;  // extra height to get over the shipping hub lip
     static final double FLOOR_1 = 3.0;
     static final double FLOOR_2 = 8.5;
     static final double FLOOR_3 = 14.75;
@@ -40,15 +42,6 @@ public class Commands extends HardwareMapping {
     public void moveBackward(double power, double distance, double timeout) {
         this.encoderDrive(power, -distance, -distance, timeout);
     }
-/*
-    public void rotateCounterClockwise(double power, double distance, double timeout) {
-        this.encoderDrive(power, -distance, distance, timeout);
-    }
-
-    public void rotateClockwise(double power, double distance, double timeout) {
-        this.encoderDrive(power, distance, -distance, timeout);
-    }
-*/
 
     /**
      * Init of the robot always zero's out the heading
@@ -108,9 +101,22 @@ public class Commands extends HardwareMapping {
         elevatorMotor.setPower(0);
     }
 
+    public void elevatorHome(int timeoutS){
+        elevatorMotor.setTargetPosition(0);
+        elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        elevatorMotor.setPower(1);
+        runtime.reset();
+        while (
+                (runtime.seconds() < timeoutS) &&
+                        (elevatorMotor.isBusy())) ;
+
+        // Stop all motion;
+        elevatorMotor.setPower(0);
+        elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
     // Move the elevator to correct floor. floor1=3in,floor2=8.5in,floor3=14.75in,floor4=20.25
     public void elevatorMoveToFloor(int floor,double timeout){
-
         if (floor == 1){
             elevatorMoveToHeight(0.5,FLOOR_1 + FLOOR_OFFSET, timeout);
         }
@@ -129,33 +135,6 @@ public class Commands extends HardwareMapping {
         this.elevatorPosition(power,heightInches,timeout);
     }
 
-    /* Intake */
-    public void intakeOn(){
-        if(intakeServo1 != null){
-            intakeServo1.setPower(0.5);
-        }
-        if(intakeServo2 != null){
-            intakeServo2.setPower(-0.5);
-        }
-
-    }
-    public void releaseIntakeServo(){
-        if(intakeServo1 != null) {
-            intakeServo1.setPower(-0.5);
-        }
-        if(intakeServo2 != null) {
-            intakeServo2.setPower(0.5);
-        }
-    }
-
-    public void stopIntakeServo(){
-        if(intakeServo1 != null) {
-            intakeServo1.setPower(0);
-        }
-        if(intakeServo2 != null) {
-            intakeServo2.setPower(0);
-        }
-    }
 
     /**
      * Assume that the elevator encoder was reset at power up
@@ -171,6 +150,14 @@ public class Commands extends HardwareMapping {
     private void elevatorPosition(double speed, double heightInches, double timeoutS) {
         int heightTarget = (int) (heightInches * ELEVATOR_COUNTS_PER_INCH);
 
+        // prevent the elevator from going too high
+        if (heightTarget > ELEVATOR_MAX_HEIGHT) {
+            heightTarget = ELEVATOR_MAX_HEIGHT;
+        }
+        // prevent the elevator from going too low
+        if (heightTarget < ELEVATOR_MIN_HEIGHT) {
+            heightTarget = ELEVATOR_MIN_HEIGHT;
+        }
         // now we need to adjust for elevator angle
         // use ASA theorem
 
@@ -181,43 +168,14 @@ public class Commands extends HardwareMapping {
         elevatorMotor.setPower(Math.abs(speed));
         while (
                 (runtime.seconds() < timeoutS) &&
-                        (elevatorMotor.isBusy())) ;
+                        (elevatorMotor.isBusy())
+        );
 
         // Stop all motion;
         elevatorMotor.setPower(0);
         elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    /**
-     * Assume that the elevator encoder was reset at power up
-     * so position is 0.
-     * Move to the given position based on heightInches
-     * This function will maintain and return true when complete
-     * used by TeleOp
-     *
-     * @param speed double speed [-1..1]
-     * @param heightInches double desired inches off the ground
-     * @return boolean complete
-     */
-/*    public boolean teleopElevatorPosition(double speed, double heightInches) {
-        int heightTarget = (int) (heightInches * ELEVATOR_COUNTS_PER_INCH);
-        int currentPosition = elevatorMotor.getCurrentPosition();
-
-        // now we need to adjust for elevator angle
-        // use ASA theorem
-
-        // if we are close complete
-        if (Math.abs(heightTarget-currentPosition) <= 10) {
-            elevatorMotor.setPower(0);
-            elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            return true;
-        } else {
-            elevatorMotor.setTargetPosition(heightTarget);
-            elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
-        return false;
-    }
-*/
     /**
      * Should be called to zero the encoder
      * Example at the start of Autonomous

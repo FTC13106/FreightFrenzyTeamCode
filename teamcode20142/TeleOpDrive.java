@@ -12,60 +12,48 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 //@Disabled
 public class TeleOpDrive extends LinearOpMode {
 
-    /* Declare OpMode members. */
-    HardwareMapping robot           = new HardwareMapping();   // Use our hardware mapping
-    Commands commands = new Commands();  
-    //FieldNavigation fieldNav = new FieldNavigation();
+    static final double DRIVE_SPEED = 0.6;
 
+    /* Declare OpMode members. */
+    HardwareMapping robot = new HardwareMapping();   // Use our hardware mapping
+    Commands commands = new Commands();
+    int elevatorCurrentPosition;
     @Override
     public void runOpMode() {
         double driveRightSpeed;
         double driveLeftSpeed;
-        Orientation angles;
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
          */
         robot.init(hardwareMap);
         commands.init(hardwareMap);
-        
-        //fieldNav.startTracking();
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            // TODO remove later
-            commands.resetElevatorPosition();
-            //Driver controller ---------------------
 
-            // Rotate the carousel for blue side
+            elevatorCurrentPosition = robot.elevatorMotor.getCurrentPosition();
+            //Driver controller ---------------------
             if (gamepad1.x){
+                // Rotate the carousel for blue side
                 commands.duckCarouselClockwise(50);
             }else if (gamepad1.b){
+                // Rotate the carousel for red side
                 commands.duckCarouselCounterClockwise(50);
             }else{
                 commands.duckCarouselCounterClockwise(0);
             }
             
-            // arcade drive controls
+            // Arcade drive controls
             driveLeftSpeed = -(gamepad1.left_stick_y - gamepad1.left_stick_x);
             driveRightSpeed = -(gamepad1.left_stick_y + gamepad1.left_stick_x);
-            angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-            telemetry.addData("leftstick - y ", gamepad1.left_stick_y);
-            telemetry.addData("leftstick - x", gamepad1.left_stick_x);
-            telemetry.addData("z" , angles.firstAngle);
-            telemetry.addData("x" , angles.secondAngle);
-            telemetry.addData("y" , angles.thirdAngle);
-            telemetry.update();
-
-            // tank drive controls
-            //driveLeftSpeed = -gamepad1.left_stick_y;
-            //driveRightSpeed = -gamepad1.right_stick_y;
 
             // Output the safe vales to the motor drives.
-            robot.rightRearMotor.setPower(driveRightSpeed);
-            robot.rightFrontMotor.setPower(driveRightSpeed);
-            robot.leftRearMotor.setPower(driveLeftSpeed);
-            robot.leftFrontMotor.setPower(driveLeftSpeed);
+            robot.rightRearMotor.setPower(driveRightSpeed * DRIVE_SPEED);
+            robot.rightFrontMotor.setPower(driveRightSpeed * DRIVE_SPEED);
+            robot.leftRearMotor.setPower(driveLeftSpeed * DRIVE_SPEED);
+            robot.leftFrontMotor.setPower(driveLeftSpeed * DRIVE_SPEED);
            
             //Co-Driver controller -------------------
             if (gamepad2 != null){
@@ -78,53 +66,72 @@ public class TeleOpDrive extends LinearOpMode {
                 if (gamepad2.y){
                     commands.openClawMidway();
                 }
-
-                if (gamepad2.right_stick_y >= .1 || gamepad2.right_stick_y <= -.1) {
-                    if (gamepad2.right_stick_y < -.1) {
-                        commands.elevatorUp();
-                        telemetry.addData("elevator",robot.elevatorMotor.getCurrentPosition());
-                        telemetry.update();
-                    } else if (gamepad2.right_stick_y > .1) {
-                        commands.elevatorDown();
-                        telemetry.addData("elevator",robot.elevatorMotor.getCurrentPosition());
-                        telemetry.update();
-                    }
-                } else {
-                    commands.elevatorStop();
+                if (gamepad2.left_bumper && gamepad2.right_bumper){
+                    commands.resetElevatorPosition();
                     telemetry.addData("elevator",robot.elevatorMotor.getCurrentPosition());
                     telemetry.update();
                 }
 
-                if (gamepad2.dpad_up) {
-                    commands.releaseIntakeServo();
-                }else if (gamepad2.dpad_down) {
-                    commands.intakeOn();
-                }else{
-                    commands.stopIntakeServo();
+                if (gamepad2.start){
+                    commands.openClawMidway();
+                    commands.elevatorHome(10);
+                    telemetry.addData("elevator homed",robot.elevatorMotor.getCurrentPosition());
+                    telemetry.update();
+                    commands.openClaw();
                 }
-            }
-             
 
-            // TODO restore fieldNav if we decide to use it
+                if (gamepad2.left_stick_y >= .1 || gamepad2.left_stick_y <= -.1) {
+                    if (gamepad2.left_stick_y < -.1 &&
+                            (robot.elevatorMotor.getCurrentPosition() < commands.ELEVATOR_MAX_HEIGHT || gamepad2.right_bumper)
+                    ) {
+                        commands.elevatorUp();
+                    } else if (gamepad2.left_stick_y > .1 &&
+                            (robot.elevatorMotor.getCurrentPosition() > commands.ELEVATOR_MIN_HEIGHT || gamepad2.right_bumper)
+                    ) {
+                            commands.elevatorDown();
+                    }
+                    else{
+                        commands.elevatorStop();
+                    }
+                    telemetry.addData("elevator",robot.elevatorMotor.getCurrentPosition());
+                    telemetry.update();
+                }
+                else {
+                    commands.elevatorStop();
+                }
 
-            /*
-            float[] navData = fieldNav.getLocation();
-            if(navData != null){
-                telemetry.addData("Pos (inches)", "{X, Y, Z} = %.1f, %.1f, %.1f",
-                        navData[0],navData[1],navData[2]);
-                telemetry.addData("Rot (deg)", "{Roll, Pitch, Heading} = %.0f, %.0f, %.0f", navData[3],navData[4],navData[5]);
-                telemetry.update();
-            }else{
-                telemetry.addData("Visible Target", "none");
-                telemetry.update();
+                // single driver option
+                if (gamepad2.left_trigger > .1){
+                    // Arcade drive controls
+                    driveLeftSpeed = -(gamepad2.right_stick_y - gamepad2.right_stick_x);
+                    driveRightSpeed = -(gamepad2.right_stick_y + gamepad2.right_stick_x);
+
+                    // Output the safe vales to the motor drives.
+                    robot.rightRearMotor.setPower(driveRightSpeed * DRIVE_SPEED);
+                    robot.rightFrontMotor.setPower(driveRightSpeed * DRIVE_SPEED);
+                    robot.leftRearMotor.setPower(driveLeftSpeed * DRIVE_SPEED);
+                    robot.leftFrontMotor.setPower(driveLeftSpeed * DRIVE_SPEED);
+                }
+
+
+//                if (gamepad2.right_stick_y >= .1 || gamepad2.right_stick_y <= -.1) {
+//                    if (gamepad2.right_stick_y < -.1) {
+//                        commands.elevatorUp();
+//                    } else if (gamepad2.right_stick_y > .1) {
+//                        commands.elevatorDown();
+//                    }
+//                    telemetry.addData("elevator", robot.elevatorMotor.getCurrentPosition());
+//                    telemetry.update();
+//                }
+//                else {
+//                    commands.elevatorStop();
+//                    telemetry.addData("elevator stop", robot.elevatorMotor.getCurrentPosition());
+//                    telemetry.update();
+//                }
             }
-            */
-            
-            
             // Pace this loop so jaw action is reasonable speed.
-            sleep(50);
+            //idle();
+            sleep(40);
         }
-
-        //fieldNav.stopTracking();
     }
 }
