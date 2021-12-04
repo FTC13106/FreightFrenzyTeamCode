@@ -26,12 +26,15 @@ public class Commands extends HardwareMapping {
     static final double CAROUSEL_SPEED = .5;
 
     static final int ELEVATOR_MIN_HEIGHT = -3000;
+    static final int ELEVATOR_FLOOR_1 = 100;
+    static final int ELEVATOR_FLOOR_2 = 4300;
+    static final int ELEVATOR_FLOOR_3 = 9800;
     static final int ELEVATOR_MAX_HEIGHT = 10000;
-    static final double FLOOR_OFFSET = -2.0;  // extra height to get over the shipping hub lip
-    static final double FLOOR_1 = 3.0;
-    static final double FLOOR_2 = 8.5;
-    static final double FLOOR_3 = 14.75;
-    //static final double FLOOR_4 = 20.25;
+
+//    static final double FLOOR_1 = 3.0;
+//    static final double FLOOR_2 = 8.5;
+//    static final double FLOOR_3 = 14.75;
+//    static final double FLOOR_4 = 20.25;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -117,24 +120,21 @@ public class Commands extends HardwareMapping {
 
     // Move the elevator to correct floor. floor1=3in,floor2=8.5in,floor3=14.75in,floor4=20.25
     public void elevatorMoveToFloor(int floor,double timeout){
-        if (floor == 1){
-            elevatorMoveToHeight(0.5,FLOOR_1 + FLOOR_OFFSET, timeout);
-        }
-        else if (floor == 2){
-            elevatorMoveToHeight(0.5, FLOOR_2 + FLOOR_OFFSET, timeout);
+        if (floor == 2){
+            elevatorPosition(0.5, ELEVATOR_FLOOR_2, timeout);
         }
         else if (floor == 3){
-            elevatorMoveToHeight(0.5, FLOOR_3 + FLOOR_OFFSET, timeout);
+            elevatorPosition(0.5, ELEVATOR_FLOOR_3, timeout);
         }
         else{
-            elevatorMoveToHeight(0.5, FLOOR_1 + FLOOR_OFFSET, timeout);
+            elevatorPosition(0.5, ELEVATOR_FLOOR_1, timeout);
         }
     }
 
     public void elevatorMoveToHeight(double power,double heightInches,double timeout){
-        this.elevatorPosition(power,heightInches,timeout);
+        int encoderPosition = (int) (heightInches * ELEVATOR_COUNTS_PER_INCH);
+        this.elevatorPosition(power, encoderPosition, timeout);
     }
-
 
     /**
      * Assume that the elevator encoder was reset at power up
@@ -144,24 +144,23 @@ public class Commands extends HardwareMapping {
      * used by Autonomous
      *
      * @param speed double speed [-1..1]
-     * @param heightInches double desired inches off the ground
+     * @param encoderPosition int desired encoder position
      * @param timeoutS timeout in seconds used by Autonomous
      */
-    private void elevatorPosition(double speed, double heightInches, double timeoutS) {
-        int heightTarget = (int) (heightInches * ELEVATOR_COUNTS_PER_INCH);
+    private void elevatorPosition(double speed, int encoderPosition, double timeoutS) {
 
         // prevent the elevator from going too high
-        if (heightTarget > ELEVATOR_MAX_HEIGHT) {
-            heightTarget = ELEVATOR_MAX_HEIGHT;
+        if (encoderPosition > ELEVATOR_MAX_HEIGHT) {
+            encoderPosition = ELEVATOR_MAX_HEIGHT;
         }
         // prevent the elevator from going too low
-        if (heightTarget < ELEVATOR_MIN_HEIGHT) {
-            heightTarget = ELEVATOR_MIN_HEIGHT;
+        if (encoderPosition < ELEVATOR_MIN_HEIGHT) {
+            encoderPosition = ELEVATOR_MIN_HEIGHT;
         }
         // now we need to adjust for elevator angle
         // use ASA theorem
 
-        elevatorMotor.setTargetPosition(heightTarget);
+        elevatorMotor.setTargetPosition(encoderPosition);
         elevatorMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         runtime.reset();
 
