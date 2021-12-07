@@ -32,7 +32,7 @@ public class Commands extends HardwareMapping {
 
     static final double FLOOR_OFFSET = 1.0;  // extra height to get over the shipping hub lip
     static final double FLOOR_0 = 100; // Encoder Position from perpendicular to earth
-    static final double FLOOR_1 = 730; // Encoder Position from perpendicular to earth
+    static final double FLOOR_1 = 800; // Encoder Position from perpendicular to earth
     static final double FLOOR_2 = 1200; // Encoder Position from perpendicular to earth
     static final double FLOOR_3 = 1530; // Encoder Position from perpendicular to earth
     static final double FLOOR_4 = 1600; // Encoder Position from perpendicular to earth

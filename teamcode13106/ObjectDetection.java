@@ -85,6 +85,22 @@ public class ObjectDetection extends HardwareMapping {
         return duck;
     }
 
+    /**
+     * Returns an assessment of the object detection based on duck position
+     * @return the determined state {1 = level 1 (Default), 2= level 2, 3 = level 3}
+     */
+    public int getDuckState(){
+        float duck = getDuckPosition();
+        // Split the viewable screen (~600 wide) into 3 zones
+        // if the duck is found in that zone return that zone number
+        if (duck < 200)
+            return 1;
+        else if(duck < 400)
+            return 2;
+        else
+            return 3;
+    }
+
     public int getBarcodeFloor(ObjectDetection objectDetection){
         int state = objectDetection.getDuckState();
         duckLocation = objectDetection.getDuckPosition();
@@ -100,20 +116,6 @@ public class ObjectDetection extends HardwareMapping {
         return state;
     }
 
-    /**
-     * Returns an assessment of the object detection based on duck position
-     * @return the determined state {1 = level 1 (Default), 2= level 2, 3 = level 3}
-     */
-    public int getDuckState(){
-        float duck = getDuckPosition();
-        // Split the viewable screen (~600 wide) into 3 zones and if the duck is found in that zone return that zone number
-        if (duck < 200)
-            return 1;
-        else if(duck < 400)
-            return 2;
-        else
-            return 3;
-    }
 
     /**
      * Returns an assessment of the object detection

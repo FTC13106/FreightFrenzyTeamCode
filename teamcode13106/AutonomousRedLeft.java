@@ -26,14 +26,13 @@ public class AutonomousRedLeft extends LinearOpMode {
             telemetry.addData("floor ", floor);
             telemetry.addData("duck location", duckLocation);
             telemetry.update();
-
             //go to shipping hub, drop off preload, drive to carosel, park in *warehouse?
             //close claw
             commands.closeClaw();
             //raise intake
             commands.intakeUp();
             //get off the wall
-            commands.moveForward(commands.AUTON_DRIVE_SPEED, 7, 8);
+            commands.moveForward(commands.AUTON_DRIVE_SPEED, 5, 8);
             //face the shipping hub
             commands.rotateClockwiseGyro(commands.AUTON_ROTATE_SPEED, -30,7);
             //raise arm off floor
@@ -49,7 +48,7 @@ public class AutonomousRedLeft extends LinearOpMode {
             //move away from the shipping hub
             commands.moveBackward(commands.AUTON_DRIVE_SPEED,5, 8);
             //turn to face the carousel
-            commands.rotateClockwiseGyro(commands.AUTON_ROTATE_SPEED, -70,7);
+            commands.rotateClockwiseGyro(commands.AUTON_ROTATE_SPEED, -80,7);
             //drive towards carousel
             commands.moveBackward(commands.AUTON_DRIVE_SPEED,32, 8);
             //moving the robot out of the way
@@ -59,24 +58,24 @@ public class AutonomousRedLeft extends LinearOpMode {
             // lower the elevator
             commands.elevatorMoveToFloor(0,8);
             //back up to carousel
-            commands.moveBackward(commands.AUTON_DRIVE_SPEED,2, 8);
+            commands.moveBackward(commands.AUTON_DRIVE_SPEED,6, 8);
             //turn on the duck spinner
-            commands.duckCarouselCounterClockwise(0.75);
+            commands.duckCarouselCounterClockwise(1);
             //wait for duck to fall off
             sleep(6000); // 4 seconds?
             // turn off Carousel motor
             commands.duckCarouselClockwise(0);
 
             //move the robot off the carousel
-            commands.moveForward(commands.AUTON_DRIVE_SPEED, 7, 8);
+            commands.moveForward(commands.AUTON_DRIVE_SPEED, 20, 8);
             //line up to storage unit
-            commands.rotateCounterClockwiseGyro(commands.AUTON_ROTATE_SPEED, 20,7);
+//            commands.rotateCounterClockwiseGyro(commands.AUTON_ROTATE_SPEED, 20,7);
+//            //move into the storage unit
+//            commands.moveForward(commands.AUTON_DRIVE_SPEED, 3, 8);
+//
+//            commands.rotateClockwiseGyro(commands.AUTON_ROTATE_SPEED, 0,7);
             //move into the storage unit
-            commands.moveForward(commands.AUTON_DRIVE_SPEED, 5, 8);
-
-            commands.rotateCounterClockwiseGyro(commands.AUTON_ROTATE_SPEED, 0,7);
-            //move into the storage unit
-            commands.moveForward(commands.AUTON_DRIVE_SPEED, 12, 8);
+            commands.moveForward(commands.AUTON_DRIVE_SPEED, 10, 8);
             //sleep
             sleep(30000);
         }

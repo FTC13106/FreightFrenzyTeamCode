@@ -49,6 +49,13 @@ public class TeleOpDrive extends LinearOpMode {
             // arcade drive controls
             driveLeftSpeed = -(gamepad1.left_stick_y - gamepad1.left_stick_x);
             driveRightSpeed = -(gamepad1.left_stick_y + gamepad1.left_stick_x);
+
+            // Output the safe vales to the motor drives.
+            robot.rightRearMotor.setPower(driveRightSpeed);
+            robot.rightFrontMotor.setPower(driveRightSpeed);
+            robot.leftRearMotor.setPower(driveLeftSpeed);
+            robot.leftFrontMotor.setPower(driveLeftSpeed);
+
             angles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
             telemetry.addData("leftstick - y ", gamepad1.left_stick_y);
             telemetry.addData("leftstick - x", gamepad1.left_stick_x);
@@ -62,12 +69,7 @@ public class TeleOpDrive extends LinearOpMode {
             //driveLeftSpeed = -gamepad1.left_stick_y;
             //driveRightSpeed = -gamepad1.right_stick_y;
 
-            // Output the safe vales to the motor drives.
-            robot.rightRearMotor.setPower(driveRightSpeed);
-            robot.rightFrontMotor.setPower(driveRightSpeed);
-            robot.leftRearMotor.setPower(driveLeftSpeed);
-            robot.leftFrontMotor.setPower(driveLeftSpeed);
-           
+
             //Co-Driver controller -------------------
             if (gamepad2 != null){
                 if (gamepad2.a){
