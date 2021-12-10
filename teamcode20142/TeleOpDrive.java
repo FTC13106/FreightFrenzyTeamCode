@@ -99,38 +99,10 @@ public class TeleOpDrive extends LinearOpMode {
                 else {
                     commands.elevatorStop();
                 }
-
-                // single driver option
-                if (gamepad2.left_trigger > .1){
-                    // Arcade drive controls
-                    driveLeftSpeed = -(gamepad2.right_stick_y - gamepad2.right_stick_x);
-                    driveRightSpeed = -(gamepad2.right_stick_y + gamepad2.right_stick_x);
-
-                    // Output the safe vales to the motor drives.
-                    robot.rightRearMotor.setPower(driveRightSpeed * DRIVE_SPEED);
-                    robot.rightFrontMotor.setPower(driveRightSpeed * DRIVE_SPEED);
-                    robot.leftRearMotor.setPower(driveLeftSpeed * DRIVE_SPEED);
-                    robot.leftFrontMotor.setPower(driveLeftSpeed * DRIVE_SPEED);
-                }
-
-
-//                if (gamepad2.right_stick_y >= .1 || gamepad2.right_stick_y <= -.1) {
-//                    if (gamepad2.right_stick_y < -.1) {
-//                        commands.elevatorUp();
-//                    } else if (gamepad2.right_stick_y > .1) {
-//                        commands.elevatorDown();
-//                    }
-//                    telemetry.addData("elevator", robot.elevatorMotor.getCurrentPosition());
-//                    telemetry.update();
-//                }
-//                else {
-//                    commands.elevatorStop();
-//                    telemetry.addData("elevator stop", robot.elevatorMotor.getCurrentPosition());
-//                    telemetry.update();
-//                }
             }
+
             // Pace this loop so jaw action is reasonable speed.
-            //idle();
+            idle();
             sleep(40);
         }
     }

@@ -25,11 +25,11 @@ public class Commands extends HardwareMapping {
     static final double AUTONOMOUS_TURN_SPEED = .2;
     static final double CAROUSEL_SPEED = .5;
 
-    static final int ELEVATOR_MIN_HEIGHT = -3000;
+    static final int ELEVATOR_MIN_HEIGHT = -3200;
     static final int ELEVATOR_FLOOR_1 = 100;
     static final int ELEVATOR_FLOOR_2 = 4300;
     static final int ELEVATOR_FLOOR_3 = 9800;
-    static final int ELEVATOR_MAX_HEIGHT = 10000;
+    static final int ELEVATOR_MAX_HEIGHT = 9600;
 
 //    static final double FLOOR_1 = 3.0;
 //    static final double FLOOR_2 = 8.5;

@@ -43,6 +43,7 @@ public class AutonomousBlueRight extends AutonomousBase {
             commands.rotateCounterClockwiseGyro(commands.AUTONOMOUS_TURN_SPEED,70,10);
             // drive towards carousel
             commands.moveBackward(commands.AUTONOMOUS_DRIVE_SPEED,35, 8);
+
             // moving the robot out of the way
             commands.rotateCounterClockwiseGyro(commands.AUTONOMOUS_TURN_SPEED,90,10);
             // back up to carousel
@@ -52,6 +53,9 @@ public class AutonomousBlueRight extends AutonomousBase {
                 // reset the elevator
                 commands.elevatorHome(5);
             }
+
+            // moving the robot out of the way
+            commands.rotateCounterClockwiseGyro(commands.AUTONOMOUS_TURN_SPEED,105,10);
 
             // turn on the duck spinner
             commands.duckCarouselClockwise(commands.CAROUSEL_SPEED);
