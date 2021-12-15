@@ -7,61 +7,64 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 @Autonomous(name="Autonomous Test", group="Pushbot")
 @Disabled
 public class AutonomousTest extends LinearOpMode {
-
-    /* Declare OpMode members. */
     Commands commands = new Commands();
-
+    ObjectDetection objectDetection = new ObjectDetection();
+    int defaultState = 1;
     @Override
     public void runOpMode() {
-
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
          */
         commands.init(hardwareMap);
+        objectDetection.init(hardwareMap);
+        commands.resetElevatorPosition();
 
-        ObjectDetection obd = new ObjectDetection();
-        telemetry.addLine("Starting Barcode Detection!");
-        telemetry.update();
-        int i = 0;
-        int obdState = obd.getState();
-        while(obdState == -1){ // loop until 10 times or until the object detection returns back a valid result
-            if(i++ > 10){
-                break;
-            }
-        }
-
-        if(obdState == -1){
-            telemetry.addLine("Could Not Detect Code");
-        }else if(obdState == 1){
-            telemetry.addLine("Bar Code A");
-        }else if(obdState == 2){
-            telemetry.addLine("Bar Code B");
-        }else if(obdState == 3){
-            telemetry.addLine("Bar Code C");
-        }else{
-            telemetry.addLine("Bar Code ERROR");
-        }
-
-        telemetry.addLine("Barcode Detection Complete!");
-        telemetry.update();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            int floor = objectDetection.getBarcodeFloor(objectDetection,defaultState);
+            float duckLocation = objectDetection.duckLocation;
+            telemetry.addData("floor ", floor);
+            telemetry.update();
 
-            commands.moveForward(0.5,10, 15);
-            commands.moveBackward(0.65, 15, 20);
+            //raise intake
+            commands.intakeUp();
+            sleep(1000);
+            //close claw
+            commands.closeClaw();
+            sleep(1000);
+//            //get off the wall
+//            commands.moveForward(commands.AUTON_DRIVE_SPEED,5,5);
+//            //face the hub
+//            commands.rotateCounterClockwiseGyro(commands.AUTON_ROTATE_SPEED,30,8);
+            sleep(3000);
 
-            commands.rotateCounterClockwise(0.5, 10,20 );
+            //raise arm off floor
+            commands.elevatorMoveToHeight(commands.AUTON_ELEVATOR_SPEED,1000,3);
+            //lower intake
+            commands.intakeDown();
+            //raise arm to predetermined floor
+            commands.elevatorMoveToFloor(floor,5);
+//            //kiss the hub
+//            commands.moveForward(commands.AUTON_DRIVE_SPEED,20,8);
+//
+//            //drop preload box
+//            commands.openClaw();
+//
+//            // clear the hub
+//            commands.moveBackward(commands.AUTON_DRIVE_SPEED,5,3);
+//            //turn to face the warehouse
+//            commands.rotateClockwiseGyro(commands.AUTON_ROTATE_SPEED,-90,10);
+//            //lift the intake
+//            commands.intakeUp();
+//            // lower the elevator
+//            commands.elevatorMoveToFloor(1,8);
+//            //go to the warehouse
+//            commands.moveForward(commands.AUTON_DRIVE_SPEED,45,11);
 
-            commands.duckCarouselCounterClockwise(0.5);
-            commands.duckCarouselClockwise(0.5);
             sleep(30000);
         }
     }
-
-
-
-
 }

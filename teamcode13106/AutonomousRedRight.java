@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 public class AutonomousRedRight extends LinearOpMode {
     Commands commands = new Commands();
     ObjectDetection objectDetection = new ObjectDetection();
-
+    int defaultState = 3;
     @Override
     public void runOpMode() {
         /* Initialize the hardware variables.
@@ -22,22 +22,23 @@ public class AutonomousRedRight extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            int floor = objectDetection.getBarcodeFloor(objectDetection);
+            int floor = objectDetection.getBarcodeFloor(objectDetection,defaultState);
             float duckLocation = objectDetection.duckLocation;
             telemetry.addData("floor ", floor);
-            telemetry.addData("duck location", duckLocation);
             telemetry.update();
 
-            //close claw
-            commands.closeClaw();
             //raise intake
             commands.intakeUp();
+            sleep(175);
+            //close claw
+            commands.closeClaw();
+            sleep(250);
+            //raise arm off floor
+            commands.elevatorMoveToHeight(commands.AUTON_ELEVATOR_SPEED,1000,3);
             //get off the wall
             commands.moveForward(commands.AUTON_DRIVE_SPEED,5,5);
             //face the hub
             commands.rotateCounterClockwiseGyro(commands.AUTON_ROTATE_SPEED,30,8);
-            //raise arm off floor
-            commands.elevatorMoveToHeight(commands.AUTON_ELEVATOR_SPEED,200,3);
             //lower intake
             commands.intakeDown();
             //raise arm to predetermined floor
@@ -49,7 +50,7 @@ public class AutonomousRedRight extends LinearOpMode {
             commands.openClaw();
 
             // clear the hub
-            commands.moveBackward(commands.AUTON_DRIVE_SPEED,5,3);
+            commands.moveBackward(commands.AUTON_DRIVE_SPEED,3,3);
             //turn to face the warehouse
             commands.rotateClockwiseGyro(commands.AUTON_ROTATE_SPEED,-90,10);
             //lift the intake
@@ -57,7 +58,7 @@ public class AutonomousRedRight extends LinearOpMode {
             // lower the elevator
             commands.elevatorMoveToFloor(1,8);
             //go to the warehouse
-            commands.moveForward(commands.AUTON_DRIVE_SPEED,45,11);
+            commands.moveForward(commands.AUTON_DRIVE_SPEED,50,11);
 
             sleep(30000);
         }

@@ -39,9 +39,9 @@ public class TeleOpDrive extends LinearOpMode {
 
             // Rotate the carousel for blue side
             if (gamepad1.x){
-                commands.duckCarouselClockwise(75);
+                commands.duckCarouselClockwise(0.75);
             }else if(gamepad1.b){
-                commands.duckCarouselCounterClockwise(75);
+                commands.duckCarouselCounterClockwise(0.75);
             }else{
                 commands.duckCarouselCounterClockwise(0);
             }
@@ -84,9 +84,6 @@ public class TeleOpDrive extends LinearOpMode {
                 if (gamepad2.y){
                     //move to floor 3
                 }
-                if (gamepad2.left_bumper){
-                    //move to floor 4
-                }
 
                 if (gamepad2.right_stick_y >= .1 || gamepad2.right_stick_y <= -.1) {
                     if (gamepad2.right_stick_y < -.1) {
@@ -107,7 +104,7 @@ public class TeleOpDrive extends LinearOpMode {
                 if (gamepad2.right_bumper ){
                     //intake
                     commands.intakeUp();
-                }else{
+                }else if(gamepad2.left_bumper){
                     commands.intakeDown();
                 }
 

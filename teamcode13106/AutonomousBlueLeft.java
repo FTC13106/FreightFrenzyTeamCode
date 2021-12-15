@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 public class AutonomousBlueLeft extends LinearOpMode {
     Commands commands = new Commands();
     ObjectDetection objectDetection = new ObjectDetection();
-
+    int defaultState = 1;
     @Override
     public void runOpMode() {
         /* Initialize the hardware variables.
@@ -22,23 +22,24 @@ public class AutonomousBlueLeft extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            int floor = objectDetection.getBarcodeFloor(objectDetection);
-            float duckLocation = objectDetection.duckLocation;
+            int floor = objectDetection.getBarcodeFloor(objectDetection,defaultState);
+//            float duckLocation = objectDetection.duckLocation;
             telemetry.addData("floor ", floor);
-            telemetry.addData("duck location", duckLocation);
+//            telemetry.addData("duck location", duckLocation);
             telemetry.update();
 
-            //close claw
-            commands.closeClaw();
             //raise intake
             commands.intakeUp();
-            //get off the wall
+            sleep(250);
+            //close claw
+            commands.closeClaw();
+            sleep(250);
+            //raise arm off floor
+            commands.elevatorMoveToHeight(commands.AUTON_ELEVATOR_SPEED,1000,3);
             // move off the wall 5
             commands.moveForward(commands.AUTON_DRIVE_SPEED,5,5);
             //face the hub
             commands.rotateClockwiseGyro(commands.AUTON_ROTATE_SPEED,-30,8);
-            //raise arm off floor
-            commands.elevatorMoveToHeight(commands.AUTON_ELEVATOR_SPEED,200,3);
             //lower intake
             commands.intakeDown();
             //raise arm to predetermined floor
@@ -50,7 +51,7 @@ public class AutonomousBlueLeft extends LinearOpMode {
             commands.openClaw();
 
             // clear the hub
-            commands.moveBackward(commands.AUTON_DRIVE_SPEED,5,3);
+            commands.moveBackward(commands.AUTON_DRIVE_SPEED,3,3);
 
             //turn to face the warehouse
             commands.rotateCounterClockwiseGyro(commands.AUTON_ROTATE_SPEED,90,10);
@@ -59,7 +60,7 @@ public class AutonomousBlueLeft extends LinearOpMode {
             // lower the elevator
             commands.elevatorMoveToFloor(1,8);
             //go to the warehouse
-            commands.moveForward(commands.AUTON_DRIVE_SPEED,45,11);
+            commands.moveForward(commands.AUTON_DRIVE_SPEED,52,11);
 
             sleep(30000);
         }

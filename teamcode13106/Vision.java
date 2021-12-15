@@ -23,10 +23,10 @@ public class Vision extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            int state = objectDetection.getDuckState();
+            int state = objectDetection.getDuckState(1);
             float duckLocation = objectDetection.getDuckPosition();
             for (int i = 0; i<= 60; i++){
-                state = objectDetection.getDuckState();
+                state = objectDetection.getDuckState(1);
                 duckLocation = objectDetection.getDuckPosition();
                 telemetry.addData("count ", i);
                 telemetry.addData("state ", state);

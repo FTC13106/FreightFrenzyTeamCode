@@ -21,7 +21,7 @@ public class Commands extends HardwareMapping {
     // added for AUTON SPEEDS
     static final double AUTON_DRIVE_SPEED = 0.5f;
     static final double AUTON_ROTATE_SPEED = 0.2f;
-    static final double AUTON_ELEVATOR_SPEED = 0.3f;
+    static final double AUTON_ELEVATOR_SPEED = 0.6f;
 
     static final double ELEVATOR_WHEEL_DIAMETER_INCHES = 1;
     static final double ELEVATOR_GEAR_REDUCTION = 1;     // This is < 1.0 if geared UP
@@ -31,11 +31,11 @@ public class Commands extends HardwareMapping {
     static final double ELEVATOR_ANGLE = 1.0; // angle of Elevator as sin(degrees)
 
     static final double FLOOR_OFFSET = 1.0;  // extra height to get over the shipping hub lip
-    static final double FLOOR_0 = 100; // Encoder Position from perpendicular to earth
-    static final double FLOOR_1 = 800; // Encoder Position from perpendicular to earth
-    static final double FLOOR_2 = 1200; // Encoder Position from perpendicular to earth
-    static final double FLOOR_3 = 1530; // Encoder Position from perpendicular to earth
-    static final double FLOOR_4 = 1600; // Encoder Position from perpendicular to earth
+    static final double FLOOR_0 = 1000; // Encoder Position from perpendicular to earth
+    static final double FLOOR_1 = 1800; // Encoder Position from perpendicular to earth
+    static final double FLOOR_2 = 2500; // Encoder Position from perpendicular to earth
+    static final double FLOOR_3 = 3260; // Encoder Position from perpendicular to earth
+    static final double FLOOR_4 = 3600; // Encoder Position from perpendicular to earth
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -98,12 +98,12 @@ public class Commands extends HardwareMapping {
     /* Elevator */
     public void elevatorUp(){
         elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        elevatorMotor.setPower(0.5);
+        elevatorMotor.setPower(0.6);
     }
 
     public void elevatorDown(){
         elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        elevatorMotor.setPower(-0.5);
+        elevatorMotor.setPower(-0.6);
     }
 
     public void elevatorStop(){
@@ -115,22 +115,22 @@ public class Commands extends HardwareMapping {
     public void elevatorMoveToFloor(int floor,double timeout){
 
         if (floor == 1){
-            elevatorMoveToHeight(0.5,FLOOR_1 + FLOOR_OFFSET, timeout);
+            elevatorMoveToHeight(0.6,FLOOR_1 + FLOOR_OFFSET, timeout);
         }
         else if (floor == 2){
-            elevatorMoveToHeight(0.5, FLOOR_2 + FLOOR_OFFSET, timeout);
+            elevatorMoveToHeight(0.6, FLOOR_2 + FLOOR_OFFSET, timeout);
         }
         else if (floor == 3){
-            elevatorMoveToHeight(0.5, FLOOR_3 + FLOOR_OFFSET, timeout);
+            elevatorMoveToHeight(0.6, FLOOR_3 + FLOOR_OFFSET, timeout);
         }
         else if (floor == 0){
-            elevatorMoveToHeight(0.5, FLOOR_0 + FLOOR_OFFSET, timeout);
+            elevatorMoveToHeight(0.6, FLOOR_0 + FLOOR_OFFSET, timeout);
         }
         else if (floor == 4){
-            elevatorMoveToHeight(0.5, FLOOR_4 + FLOOR_OFFSET, timeout);
+            elevatorMoveToHeight(0.6, FLOOR_4 + FLOOR_OFFSET, timeout);
         }
         else{
-            elevatorMoveToHeight(0.5, FLOOR_1 + FLOOR_OFFSET, timeout);
+            elevatorMoveToHeight(0.6, FLOOR_1 + FLOOR_OFFSET, timeout);
         }
     }
 
@@ -141,7 +141,7 @@ public class Commands extends HardwareMapping {
     /* Intake */
     public void intakeUp(){
         if(intakeServo1 != null){
-            intakeServo1.setPosition(0.75);
+            intakeServo1.setPosition(.95);
         }
 
     }

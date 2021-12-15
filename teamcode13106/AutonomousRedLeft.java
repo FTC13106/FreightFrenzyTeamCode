@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 public class AutonomousRedLeft extends LinearOpMode {
     Commands commands = new Commands();
     ObjectDetection objectDetection = new ObjectDetection();
-
+    int defaultState = 3;
     @Override
     public void runOpMode() {
         /* Initialize the hardware variables.
@@ -21,22 +21,23 @@ public class AutonomousRedLeft extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            int floor = objectDetection.getBarcodeFloor(objectDetection);
+            int floor = objectDetection.getBarcodeFloor(objectDetection, defaultState);
             float duckLocation = objectDetection.duckLocation;
             telemetry.addData("floor ", floor);
-            telemetry.addData("duck location", duckLocation);
             telemetry.update();
             //go to shipping hub, drop off preload, drive to carosel, park in *warehouse?
-            //close claw
-            commands.closeClaw();
             //raise intake
             commands.intakeUp();
+            sleep(250);
+            //close claw
+            commands.closeClaw();
+            sleep(250);
+            //raise arm off floor
+            commands.elevatorMoveToHeight(commands.AUTON_ELEVATOR_SPEED,1000,3);
             //get off the wall
-            commands.moveForward(commands.AUTON_DRIVE_SPEED, 5, 8);
+            commands.moveForward(commands.AUTON_DRIVE_SPEED, 7, 8);
             //face the shipping hub
             commands.rotateClockwiseGyro(commands.AUTON_ROTATE_SPEED, -30,7);
-            //raise arm off floor
-            commands.elevatorMoveToHeight(commands.AUTON_ELEVATOR_SPEED,200,3);
             //lower intake
             commands.intakeDown();
             //raise arm to predetermined floor
@@ -60,14 +61,14 @@ public class AutonomousRedLeft extends LinearOpMode {
             //back up to carousel
             commands.moveBackward(commands.AUTON_DRIVE_SPEED,6, 8);
             //turn on the duck spinner
-            commands.duckCarouselCounterClockwise(1);
+            commands.duckCarouselCounterClockwise(.75);
             //wait for duck to fall off
             sleep(6000); // 4 seconds?
             // turn off Carousel motor
             commands.duckCarouselClockwise(0);
 
             //move the robot off the carousel
-            commands.moveForward(commands.AUTON_DRIVE_SPEED, 20, 8);
+            commands.moveForward(commands.AUTON_DRIVE_SPEED, 18, 8);
             //line up to storage unit
 //            commands.rotateCounterClockwiseGyro(commands.AUTON_ROTATE_SPEED, 20,7);
 //            //move into the storage unit
@@ -75,7 +76,7 @@ public class AutonomousRedLeft extends LinearOpMode {
 //
 //            commands.rotateClockwiseGyro(commands.AUTON_ROTATE_SPEED, 0,7);
             //move into the storage unit
-            commands.moveForward(commands.AUTON_DRIVE_SPEED, 10, 8);
+
             //sleep
             sleep(30000);
         }
