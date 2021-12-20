@@ -22,7 +22,7 @@ public class AutonomousRedLeft extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             int floor = objectDetection.getBarcodeFloor(objectDetection, defaultState);
-            float duckLocation = objectDetection.duckLocation;
+//            float duckLocation = objectDetection.duckLocation;
             telemetry.addData("floor ", floor);
             telemetry.update();
             //go to shipping hub, drop off preload, drive to carosel, park in *warehouse?

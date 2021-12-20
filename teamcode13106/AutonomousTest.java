@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 @Autonomous(name="Autonomous Test", group="Pushbot")
-@Disabled
+//@Disabled
 public class AutonomousTest extends LinearOpMode {
     Commands commands = new Commands();
     ObjectDetection objectDetection = new ObjectDetection();
@@ -27,6 +27,7 @@ public class AutonomousTest extends LinearOpMode {
             int floor = objectDetection.getBarcodeFloor(objectDetection,defaultState);
             float duckLocation = objectDetection.duckLocation;
             telemetry.addData("floor ", floor);
+            telemetry.addData("location ", duckLocation);
             telemetry.update();
 
             //raise intake

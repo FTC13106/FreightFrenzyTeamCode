@@ -91,25 +91,32 @@ public class ObjectDetection extends HardwareMapping {
      */
     public int getDuckState(int defaultState){
         float duck = getDuckPosition();
+
         // Split the viewable screen (~600 wide) into 3 zones
         // if the duck is found in that zone return that zone number
+        // I think the field of view is actuall 640 not 600 we will need to test
         if(duck == -1.0f){
             return defaultState;
         }
-        if (duck < 300) //was 200
-            return 2; //was 1
-        else if(duck < 600) //was 400
-            return 3; //was 2
-        else
-            return 1; //was 3
+        duckLocation = duck;
+        if(duck > 0 && duck <= 200){
+            return 1; //was 1
+        }else if(duck < 400) { //was 400
+            return 2; //was 2
+        }else {
+            return 3; //was 3
+        }
     }
 
     public int getBarcodeFloor(ObjectDetection objectDetection, int defaultState){
         int state = objectDetection.getDuckState(defaultState);
-        duckLocation = objectDetection.getDuckPosition();
+//        duckLocation = objectDetection.getDuckPosition();
         for (int i = 0; i<= 4; i++){
+            // concern with this loop is no matter what it will only take the last state.
+            // better to build up confidence with consecutive state detection
+            // newState = oldState
             state = objectDetection.getDuckState(defaultState);
-            duckLocation = objectDetection.getDuckPosition();
+//            duckLocation = objectDetection.getDuckPosition();
             try {
                 sleep(300);
             } catch (InterruptedException e) {
